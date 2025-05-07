@@ -1,0 +1,34 @@
+### GET ALL
+GET http://localhost:3000/api/characters/classes/
+
+### POST
+
+# @name createCharacterClass
+POST http://localhost:3000/api/characters/classes
+Content-Type: application/json
+
+{
+    "name": "valar",
+    "description": "the lord of the rings gods"
+}
+
+
+### ID
+@id = {{createCharacterClass.response.body.data.id}}
+
+### GET ONE
+GET http://localhost:3000/api/characters/classes/{{id}}
+
+
+### PUT
+PUT http://localhost:3000/api/characters/classes/{{id}}
+Content-Type: application/json
+
+{
+    "name": "valar  ",
+    "description": "gods"
+}
+
+### DELETE
+
+DELETE http://localhost:3000/api/characters/classes/{{id}}
