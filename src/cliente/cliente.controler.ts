@@ -1,25 +1,25 @@
 
 import {Request, Response, NextFunction} from 'express';
-import { Character } from './character.entity.js';
+import { Cliente } from './cliente.entity.js';
 import { orm } from '../shared/db/orm.js';
 
 const en = orm.em
 
-en.getRepository(Character)
+en.getRepository(Cliente)
 
-function sanitizeCharacterInput(
+function sanitizeClienteInput(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     req.body.sanitizedInput = {
-      name: req.body.name,
-      characterClass: req.body.characterClass,
-      level: req.body.level,
-      hp: req.body.hp,
-      mana: req.body.mana,
-      attack: req.body.attack,
-      items: req.body.items,
+      nombre: req.body.nombre,
+      apellido: req.body.apellido,
+      email: req.body.email,
+      password: req.body.password,
+      telefono: req.body.telefono,
+      nombreUsuario: req.body.nombreUsuario,
+      
     }
     //more checks here
   
@@ -35,8 +35,8 @@ function sanitizeCharacterInput(
 
 async function findAll(req:Request, res: Response) {
     try{
-        const characters = await en.find(Character, {}, {populate: ['characterClass', 'items']})
-        res.status(200).json({message: 'finded all characters', data: characters})
+        const Clientes = await en.find(Cliente, {})
+        res.status(200).json({message: 'finded all Clientes', data: Clientes})
     }
     catch(error: any){
         res.status(500).json({message: error.message})
@@ -46,8 +46,8 @@ async function findAll(req:Request, res: Response) {
 async function findById(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
-        const character = await en.findOneOrFail(Character, id, {populate: ['characterClass', 'items']})
-        res.status(200).json({message: 'finded character', data: character})
+        const cliente = await en.findOneOrFail(Cliente, id)
+        res.status(200).json({message: 'finded Cliente', data: cliente})
     }
     catch(error: any){
         res.status(500).json({message: error.message})
@@ -56,9 +56,9 @@ async function findById(req:Request, res: Response) {
 
 async function add(req:Request, res: Response) {
     try{
-        const character = en.create(Character, req.body.sanitizedInput)
+        const cliente = en.create(Cliente, req.body.sanitizedInput)
         await en.flush()
-        res.status(201).json({message: 'character created succesfully', data: character})
+        res.status(201).json({message: 'Cliente created succesfully', data: cliente})
     }
     catch(error: any){
         res.status(500).json({message: error.message})
@@ -68,10 +68,10 @@ async function add(req:Request, res: Response) {
 async function modify(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
-        const character = await en.findOneOrFail(Character, id)
-        en.assign(character, req.body.sanitizedInput)
+        const cliente = await en.findOneOrFail(Cliente, id)
+        en.assign(cliente, req.body.sanitizedInput)
         await en.flush()
-        res.status(200).json({message: 'character updated', data: character})
+        res.status(200).json({message: 'Cliente updated', data: cliente})
     }
     catch(error: any){
         res.status(500).json({message: error.message})
@@ -81,9 +81,9 @@ async function modify(req:Request, res: Response) {
 async function remove(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
-        const character = en.getReference(Character, id)
-        en.removeAndFlush(character)
-        res.status(200).json({message: 'character deleted'})
+        const cliente = en.getReference(Cliente, id)
+        en.removeAndFlush(Cliente)
+        res.status(200).json({message: 'Cliente deleted'})
     }
     catch(error: any){
         res.status(500).json({message: error.message})    
@@ -91,4 +91,4 @@ async function remove(req:Request, res: Response) {
 }
 
 
-export {sanitizeCharacterInput, findAll, findById, add, modify, remove};
+export {sanitizeClienteInput, findAll, findById, add, modify, remove};

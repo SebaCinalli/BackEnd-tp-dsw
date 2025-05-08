@@ -1,10 +1,8 @@
 import 'reflect-metadata';
 import express from 'express';
-import { characterRouter } from './character/character.routes.js'; // Asegúrate de que la ruta sea correcta
-import { characterClassRouter } from './character/characterClass.routes.js'; // Asegúrate de que la ruta sea correcta
+import { ClienteRouter } from './cliente/cliente.routes.js'; // Asegúrate de que la ruta sea correcta
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
-import { characterItemRouter } from './character/characterItem.routes.js';
 const app = express();
 const PORT = 3000;
 app.use(express.json()); // Middleware para parsear JSON en el cuerpo de las peticiones
@@ -16,9 +14,7 @@ app.use((req, res, next) => {
     // siempre se ejecuta antes de las rutas y middlewares de negocio
 });
 // antes de las rutas y middlewares de negocio
-app.use('/api/characters/classes', characterClassRouter);
-app.use('/api/characters', characterRouter); // Asegúrate de que la ruta sea correcta
-app.use('/api/characters/items', characterItemRouter);
+app.use('/api/cliente', ClienteRouter); // Asegúrate de que la ruta sea correcta
 app.use((_, res) => {
     res.status(404).send({ error: 'Ruta no encontrada' });
 });

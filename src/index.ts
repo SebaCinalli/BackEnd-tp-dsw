@@ -1,10 +1,8 @@
 import 'reflect-metadata'; 
-import express from 'express';
-import { characterRouter } from './character/character.routes.js'; // Asegúrate de que la ruta sea correcta
-import { characterClassRouter } from './character/characterClass.routes.js'; // Asegúrate de que la ruta sea correcta
+import express, { Request, Response ,NextFunction } from 'express';
+import { ClienteRouter } from './cliente/cliente.routes.js'; // Asegúrate de que la ruta sea correcta
 import {orm, syncSchema} from './shared/db/orm.js'; 
 import { RequestContext } from '@mikro-orm/core';
-import { characterItemRouter } from './character/characterItem.routes.js';
 
 
 
@@ -15,7 +13,7 @@ app.use(express.json()); // Middleware para parsear JSON en el cuerpo de las pet
 
 //luego de los middleware base como express.json() o cors 
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   RequestContext.create(orm.em, next); // Crea un contexto de solicitud para MikroORM. 
   //sirve para que cada request tenga su propio contexto de base de datos y no se mezclen las transacciones
   //esto es necesario para que MikroORM funcione correctamente en un entorno de servidor
@@ -24,9 +22,7 @@ app.use((req, res, next) => {
 
 // antes de las rutas y middlewares de negocio
 
-app.use('/api/characters/classes', characterClassRouter);
-app.use('/api/characters', characterRouter);// Asegúrate de que la ruta sea correcta
-app.use('/api/characters/items', characterItemRouter)
+app.use('/api/cliente', ClienteRouter);// Asegúrate de que la ruta sea correcta
 
 app.use((_,res) =>{
   res.status(404).send({error: 'Ruta no encontrada'});
