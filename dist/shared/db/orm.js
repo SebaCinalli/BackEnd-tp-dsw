@@ -2,12 +2,12 @@
 import { MikroORM } from '@mikro-orm/mysql'; // ✅ esto importa el driver implícitamente
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 export const orm = await MikroORM.init({
-    clientUrl: 'mysql://root:root@localhost:3306/hc4gmo',
-    user: 'root',
-    password: 'nano1243',
+    clientUrl: 'mysql://root:root@localhost:3306/TP_DSW_BDD',
+    user: 'tp_dsw',
+    password: 'tp_dsw',
     host: 'localhost',
     port: 3306,
-    dbName: 'hc4gmo',
+    dbName: 'TP_DSW_BDD',
     entities: ['dist/**/*.entity.js'],
     entitiesTs: ['src/**/*.entity.ts'],
     highlighter: new SqlHighlighter(),
