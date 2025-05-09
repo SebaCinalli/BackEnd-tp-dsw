@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {findAll, findById, add, modify, remove } from "./cliente.controler.js";
+import {findAll, findById, add, modify, remove } from "./cliente.controller.js";
 
 export const ClienteRouter = Router();
 

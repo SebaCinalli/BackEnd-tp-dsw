@@ -1,12 +1,10 @@
-import { Router } from "express";
-import {findAll, findById, add, modify, remove} from './barra.controler.js'
+import { Router } from 'express';
+import { findAll, findById, add, modify, remove } from './barra.controller.js';
 
+export const BarraRouter = Router();
 
+BarraRouter.get('/', findAll);
 
-export const BarraRouter = Router()
+BarraRouter.get('/:id', findById);
 
-BarraRouter.get('/', findAll)
-
-BarraRouter.get('/:id', findById)
-
-BarraRouter.post('/', add)
+BarraRouter.post('/', add);

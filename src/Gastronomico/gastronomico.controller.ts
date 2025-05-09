@@ -1,14 +1,14 @@
-import { Barra } from "./barra.entity.js";
+import { Gastro } from "./gastronomico.entity.js";
 import {Request, Response, NextFunction} from 'express'
 import { orm } from "../shared/db/orm.js";
 
 const en = orm.em
 
-function sanitizedBarraInput(req:Request, res:Response, next: NextFunction){
+function sanitizedGastronomicoInput(req:Request, res:Response, next: NextFunction){
     req.body.sanitizedInput = {
         nombre: req.body.nombre,
-        tipoBebida: req.body.tipoBebida,
-        montoB: req.body.montoB,
+        tipoComida: req.body.tipoComida,
+        montoG: req.body.montoG,
         foto: req.body.foto
     }
 
@@ -21,12 +21,12 @@ function sanitizedBarraInput(req:Request, res:Response, next: NextFunction){
 }
 
 
-en.getRepository(Barra)
+en.getRepository(Gastro)
 
 async function findAll(req:Request, res: Response, next: NextFunction){
     try{
-        const barras = await en.find(Barra, {})
-        res.status(200).json({message: 'todas las barras encontradas', data: barras})
+        const gastronom = await en.find(Gastro, {})
+        res.status(200).json({message: 'todas las barras encontradas', data: gastronom})
     }
     catch(error:any){
         res.status(500).json({message: error.message})
@@ -37,8 +37,8 @@ async function findAll(req:Request, res: Response, next: NextFunction){
 async function findById(req:Request, res:Response, next: NextFunction){
     try{
         const id = Number.parseInt(req.params.id)
-        const barra = await en.findOneOrFail(Barra, id)
-        res.status(200).json({message: 'barra encontrada', data: barra})
+        const gastro = await en.findOneOrFail(Gastro, id)
+        res.status(200).json({message: 'gastronomico encontrado', data: gastro})
     }
     catch(error: any){
         res.status(500).json({message: error.message})
@@ -48,9 +48,9 @@ async function findById(req:Request, res:Response, next: NextFunction){
 
 async function add(req:Request, res: Response, next: NextFunction){
     try{
-        const barra = en.create(Barra, req.body.sanitizedInput)
+        const gastro = en.create(Gastro, req.body.sanitizedInput)
         await en.flush()
-        res.status(201).json({message:'barra creada', data: barra})
+        res.status(201).json({message:'gastronomico creada', data: gastro})
     }
     catch(error:any){
         res.status(500).json({message: error.message})
