@@ -1,5 +1,5 @@
 import { Property } from "@mikro-orm/core";
-import { BaseEntity } from "../shared/db/baseEntity";
+import { BaseEntity } from "../shared/db/baseEntity.js";
 
 export class Barra extends BaseEntity{
     @Property({nullable: false, unique: true})

@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Property } from "@mikro-orm/core";
-import { BaseEntity } from "../shared/db/baseEntity";
+import { BaseEntity } from "../shared/db/baseEntity.js";
 export class Barra extends BaseEntity {
     nombre;
     tipoBebida;

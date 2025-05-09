@@ -4,8 +4,8 @@ import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 
 export const orm = await MikroORM.init({
   clientUrl: 'mysql://root:root@localhost:3306/TP_DSW_BDD',
-  user: 'tp_dsw',
-  password: 'tp_dsw',
+  user: 'root',
+  password: '',
   host: 'localhost',
   port: 3306,
   dbName: 'TP_DSW_BDD',
