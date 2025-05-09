@@ -2,24 +2,22 @@ import { Property, Entity, ManyToOne , ManyToMany, Cascade, Rel} from "@mikro-or
 import { BaseEntity } from "../shared/db/baseEntity.js";
 
 @Entity()
-export class Cliente extends BaseEntity{
+export class Cliente extends BaseEntity {
+  @Property({ length: 255, unique: true })
+  nombre!: string;
   
-  @Property({unique: true, nullable: false})
-  nombre!: string
+  @Property({ length: 255, unique: true })
+  apellido!: string;
+
+  @Property({ length: 255, unique: true })
+  email!: string;
+
+  @Property({ length: 255 })
+  password!: string;
   
-  @Property({nullable: false, unique: true})
-  apellido !: string
+  @Property({ length: 20, unique: true })  // Longitud adecuada para teléfono
+  telefono!: string;
 
-  @Property({nullable: false, unique: true})
-  email !: string
-
-  @Property({nullable: false, unique: true})
-  password!: string
-  
-  @Property({nullable: false, unique: true})
-  telefono !: string
-
-  @Property({nullable: false, unique: true})
-  nombreUsuario !: string
-
+  @Property({ length: 50, unique: true, fieldName: 'nombre_usuario' })  // Mapea a snake_case
+  nombreUsuario!: string;
 }

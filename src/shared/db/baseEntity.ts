@@ -1,18 +1,14 @@
-import { PrimaryKey, DateTimeType, Property } from "@mikro-orm/core";
+import { PrimaryKey, DateTimeType, Property, Entity } from "@mikro-orm/core";
+
 
 export abstract class BaseEntity {
-    @PrimaryKey()
-    id ?: number;
+  @PrimaryKey({ autoincrement: true })  // Asegúrate de incluir autoincrement
+  id!: number;  // Usa tipo number (no opcional)
 
-    /*
-    @Property({ type: DateTimeType })
-    createdAt? = new Date();   // Fecha de creación del registro
+  // Opcional: mantén las fechas si las necesitas
+  @Property({ type: DateTimeType })
+  createdAt = new Date();
 
-    @Property({ 
-    type: DateTimeType, 
-    onupdate: () => new Date()
-    })
-    updatedAt? = new Date(); // Fecha de última actualización del registro
-
-    */
+  @Property({ type: DateTimeType, onUpdate: () => new Date() })
+  updatedAt = new Date();
 }

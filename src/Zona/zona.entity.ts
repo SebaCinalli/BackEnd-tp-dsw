@@ -1,6 +1,8 @@
-import { Property } from '@mikro-orm/core';
+import { Entity, Property } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 
+
+@Entity()
 export class Zona extends BaseEntity {
   /*@Property({nullable: false, unique: true})
     nombre !: string

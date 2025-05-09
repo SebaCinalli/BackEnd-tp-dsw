@@ -1,1 +1,0 @@
-create database if not exists TP_DSW_BDD;
