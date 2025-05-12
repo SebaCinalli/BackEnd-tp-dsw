@@ -1,23 +1,28 @@
-import { Property, Entity, ManyToOne , ManyToMany, Cascade, Rel} from "@mikro-orm/core";
+import { Property, Entity, ManyToOne, Cascade, Rel} from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.js";
+import { Solicitud } from "../Solicitud/solicitud.entity.js";
 
 @Entity()
 export class Cliente extends BaseEntity {
-  @Property({ length: 255, unique: true })
+  @Property({ length: 255, unique: true, nullable: false })
   nombre!: string;
   
-  @Property({ length: 255, unique: true })
+  @Property({ length: 255, unique: true, nullable: false })
   apellido!: string;
 
-  @Property({ length: 255, unique: true })
+  @Property({ length: 255, unique: true, nullable: false })
   email!: string;
 
-  @Property({ length: 255 })
+  @Property({ length: 255, nullable: false })
   password!: string;
   
-  @Property({ length: 20, unique: true })  // Longitud adecuada para teléfono
+  @Property({ length: 20, unique: true, nullable: false })  // Longitud adecuada para teléfono
   telefono!: string;
 
-  @Property({ length: 50, unique: true, fieldName: 'nombre_usuario' })  // Mapea a snake_case
+  @Property({ length: 50, unique: true, fieldName: 'nombre_usuario', nullable: false })  // Mapea a snake_case
   nombreUsuario!: string;
+
+  @ManyToOne(() => Solicitud, {nullable: false})
+  solicitud !: Rel<Solicitud>
+
 }
