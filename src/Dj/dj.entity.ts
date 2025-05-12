@@ -13,5 +13,5 @@ export class Dj extends BaseEntity{
     montoDj !: number
 
     @Property()
-    foto !: string[]
+    foto !: string
 }

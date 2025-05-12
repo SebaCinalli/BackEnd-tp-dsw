@@ -17,5 +17,4 @@ ClienteRouter.get('/:id', findById);
 // Rutas que modifican datos necesitan sanitización
 ClienteRouter.post('/', sanitizeClienteInput, add);
 ClienteRouter.put('/:id', sanitizeClienteInput, modify);
-ClienteRouter.patch('/:id', sanitizeClienteInput, modify);
 ClienteRouter.delete('/:id', remove);

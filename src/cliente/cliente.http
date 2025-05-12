@@ -1,15 +1,27 @@
 ### Obtener todos los clientes
 GET http://localhost:3000/api/cliente
-Accept: application/json
 
-### Obtener un cliente por ID
-GET http://localhost:3000/api/cliente/1
-Accept: application/json
 
-### Crear un nuevo cliente
+### POST un cliente
+# @name createClienteClass
+
 POST http://localhost:3000/api/cliente
 Content-Type: application/json
-Accept: application/json
+
+{
+  "nombre": "Juancito",
+  "apellido": "Pérez 2",
+  "email": "juan.perez@ejedsadasmplo.com",
+  "password": "contrasedsadsaña123",
+  "telefono": "123432432456789",
+  "nombreUsuario": "juanperez2"
+}
+
+### Crear un nuevo cliente
+# @name createClienteClass2
+
+POST http://localhost:3000/api/cliente
+Content-Type: application/json
 
 {
   "nombre": "Juan",
@@ -20,24 +32,20 @@ Accept: application/json
   "nombreUsuario": "juanperez"
 }
 
-### Crear un nuevo cliente
-POST http://localhost:3000/api/cliente
-Content-Type: application/json
-Accept: application/json
+### ID
+@id = {{createClienteClass.response.body.data.id}}
 
-{
-  "nombre": "Juancito",
-  "apellido": "Pérez 2",
-  "email": "juan.perez@ejemplo.com",
-  "password": "contraseña123",
-  "telefono": "123456789",
-  "nombreUsuario": "juanperez2"
-}
+### Obtener un cliente por ID
+
+GET http://localhost:3000/api/cliente/2
+
+
+### ID A BORRAR
+@idToDelete = {{createClienteClass2.response.body.data.id}}
 
 ### Actualizar un cliente existente
-PUT http://localhost:3000/api/cliente/1
+PUT http://localhost:3000/api/cliente/{{id}}
 Content-Type: application/json
-Accept: application/json
 
 {
   "nombre": "Juan",
@@ -46,5 +54,4 @@ Accept: application/json
 }
 
 ### Eliminar un cliente
-DELETE http://localhost:3000/api/cliente/1
-Accept: application/json
+DELETE http://localhost:3000/api/cliente/13

@@ -13,5 +13,7 @@ export class Salon extends BaseEntity {
   montoS!: number;
 
   @Property()
-  foto!: string[];
+  foto!: string;
+
+  
 }

@@ -13,5 +13,5 @@ export class Gastro extends BaseEntity{
     montoG !: number
 
     @Property()
-    foto !: string[]
+    foto !: string
 }

@@ -13,5 +13,5 @@ export class Barra extends BaseEntity{
     montoB !: number
 
     @Property()
-    foto !: string[]
+    foto !: string
 }

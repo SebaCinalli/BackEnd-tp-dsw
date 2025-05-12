@@ -1,4 +1,4 @@
-import { DateType, Entity, Property } from '@mikro-orm/core';
+import { DateType, Entity, Property, } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 
 @Entity()

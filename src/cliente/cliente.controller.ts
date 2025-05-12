@@ -82,7 +82,7 @@ async function remove(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
         const cliente = en.getReference(Cliente, id)
-        en.removeAndFlush(Cliente)
+        en.removeAndFlush(cliente)
         res.status(200).json({message: 'Cliente deleted'})
     }
     catch(error: any){
