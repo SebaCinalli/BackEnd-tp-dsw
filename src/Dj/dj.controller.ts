@@ -4,7 +4,7 @@ import { orm } from '../shared/db/orm.js';
 
 const en = orm.em;
 
-function sanitizedBarraInput(req: Request, res: Response, next: NextFunction) {
+function sanitizedDjInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombreArtistico: req.body.nombreArtistico,
     estado: req.body.estado,
@@ -51,7 +51,16 @@ async function add(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function modify(req: Request, res: Response, next: NextFunction) {}
+async function modify(req: Request, res: Response, next: NextFunction) {
+  try{
+
+  }
+  catch(error: any){
+    res.status(500).json({message: error.message})
+  }
+
+}
+
 
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
@@ -60,4 +69,4 @@ async function remove(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export { findAll, findById, add, modify, remove };
+export { sanitizedDjInput, findAll, findById, add, modify, remove };

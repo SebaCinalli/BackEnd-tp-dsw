@@ -1,0 +1,57 @@
+### Obtener todos las barras
+GET http://localhost:3000/api/barra
+
+
+### POST una barra
+# @name createBarraClass
+
+POST http://localhost:3000/api/barra
+Content-Type: application/json
+
+{
+  "nombre": "Juancito",
+  "apellido": "Pérez 2",
+  "email": "juan.perez@ejedsadasmplo.com",
+  "password": "contrasedsadsaña123",
+  "telefono": "123432432456789",
+  "nombreUsuario": "juanperez2"
+}
+
+### Crear una nuevo barra
+# @name createBarraClass2
+
+POST http://localhost:3000/api/barra
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "juan.perez@ejemplo.com",
+  "password": "contraseña123",
+  "telefono": "123456789",
+  "nombreUsuario": "juanperez"
+}
+
+### ID
+@id = {{createBarraClass.response.body.data.id}}
+
+### Obtener una barra por ID
+
+GET http://localhost:3000/api/barra/{{id}}
+
+
+### ID A BORRAR
+@idToDelete = {{createBarraClass2.response.body.data.id}}
+
+### Actualizar una barra existente
+PUT http://localhost:3000/api/barra/{{id}}
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Pérez Actualizado",
+  "email": "juan.perez.actualizado@ejemplo.com"
+}
+
+### Eliminar una barra
+DELETE http://localhost:3000/api/barra/{{idToDelete}}

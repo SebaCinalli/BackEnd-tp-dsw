@@ -1,17 +1,21 @@
-import { Entity, Property } from "@mikro-orm/core";
-import { BaseEntity } from "../shared/db/baseEntity.js";
+import { Entity, Property, ManyToOne, Rel } from '@mikro-orm/core';
+import { BaseEntity } from '../shared/db/baseEntity.js';
+import { Solicitud } from '../Solicitud/solicitud.entity.js';
 
 @Entity()
-export class Gastro extends BaseEntity{
-    @Property({nullable: false, unique: true})
-    nombre !: string
+export class Gastro extends BaseEntity {
+  @Property({ nullable: false, unique: true })
+  nombre!: string;
 
-    @Property({nullable: false, unique: true})
-    tipoComida !: string
+  @Property({ nullable: false })
+  tipoComida!: string;
 
-    @Property({nullable: false, unique: true})
-    montoG !: number
+  @Property({ nullable: false })
+  montoG!: number;
 
-    @Property()
-    foto !: string
+  @Property({ unique: true })
+  foto!: string;
+
+  @ManyToOne(() => Solicitud, { nullable: false })
+  solicitud!: Rel<Solicitud>;
 }

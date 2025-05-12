@@ -1,5 +1,12 @@
 import { Router } from 'express';
-import { findAll, findById, add, modify, remove } from './dj.controller.js';
+import {
+  sanitizedDjInput,
+  findAll,
+  findById,
+  add,
+  modify,
+  remove,
+} from './dj.controller.js';
 
 export const DjRouter = Router();
 

@@ -1,17 +1,21 @@
-import { Entity, Property} from "@mikro-orm/core";
-import { BaseEntity } from "../shared/db/baseEntity.js";
+import { Entity, Property, ManyToOne, Rel } from '@mikro-orm/core';
+import { BaseEntity } from '../shared/db/baseEntity.js';
+import { Solicitud } from '../Solicitud/solicitud.entity.js';
 
 @Entity()
-export class Dj extends BaseEntity{
-    @Property({nullable: false, unique: true})
-    nombreArtistico !: string
+export class Dj extends BaseEntity {
+  @Property({ nullable: false, unique: true })
+  nombreArtistico!: string;
 
-    @Property({nullable: false, unique: true})
-    estado !: string
+  @Property({ nullable: false })
+  estado!: string;
 
-    @Property({nullable: false, unique: true})
-    montoDj !: number
+  @Property({ nullable: false })
+  montoDj!: number;
 
-    @Property()
-    foto !: string
+  @Property({ unique: true })
+  foto!: string;
+
+  @ManyToOne(() => Solicitud, { nullable: false })
+  solicitud!: Rel<Solicitud>;
 }

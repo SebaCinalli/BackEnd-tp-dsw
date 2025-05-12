@@ -20,8 +20,6 @@ function sanitizedBarraInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-en.getRepository(Barra);
-
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
     const barras = await en.find(Barra, {});
@@ -53,13 +51,30 @@ async function add(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function modify(req: Request, res: Response, next: NextFunction) {}
+async function modify(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const barra = en.findOneOrFail(Barra, id)
+    en.assign(barra, req.body.sanitizedBarraInput)
+    await en.flush()
+    res.status(200).json({message: "barra modificada", data: barra})
+  }
+  catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+
+}
 
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
-  } catch (error: any) {
+    const id = Number.parseInt(req.params.id)
+    const barra = en.getReference(Barra, id)
+    en.removeAndFlush(barra)
+    res.status(200).json({message: "barra borrada"})
+  }
+  catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-export { findAll, findById, add, modify, remove };
+export { sanitizedBarraInput,findAll, findById, add, modify, remove };

@@ -9,12 +9,10 @@ POST http://localhost:3000/api/dj
 Content-Type: application/json
 
 {
-  "nombre": "Juancito",
-  "apellido": "Pérez 2",
-  "email": "juan.perez@ejedsadasmplo.com",
-  "password": "contrasedsadsaña123",
-  "telefono": "123432432456789",
-  "nombreUsuario": "juanperez2"
+  "nombreArtistico": "Juancito",
+  "estado": "Disponible",
+  "montoDj": 123,
+  "foto": "algo",
 }
 
 ### Crear un nuevo Dj
@@ -24,12 +22,10 @@ POST http://localhost:3000/api/dj
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
-  "apellido": "Pérez",
-  "email": "juan.perez@ejemplo.com",
-  "password": "contraseña123",
-  "telefono": "123456789",
-  "nombreUsuario": "juanperez"
+  "nombreArtistico": "Juan",
+  "estado": "Ocupado",
+  "montoDj": 1234,
+  "foto": "algoo",
 }
 
 ### ID
@@ -48,9 +44,9 @@ PUT http://localhost:3000/api/dj/{{id}}
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
-  "apellido": "Pérez Actualizado",
-  "email": "juan.perez.actualizado@ejemplo.com"
+  "nombreArtistico": "Juannnnn",
+  "estado": "Ocupado",
+  "montoDj": 1234,
 }
 
 ### Eliminar un Dj
