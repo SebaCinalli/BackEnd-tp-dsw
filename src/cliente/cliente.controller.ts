@@ -19,6 +19,7 @@ function sanitizeClienteInput(
       password: req.body.password,
       telefono: req.body.telefono,
       nombreUsuario: req.body.nombreUsuario,
+      solicitud: req.body.solicitud
       
     }
     //more checks here
@@ -82,8 +83,8 @@ async function remove(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
         const cliente = en.getReference(Cliente, id)
-        en.removeAndFlush(cliente)
-        res.status(200).json({message: 'Cliente deleted'})
+        await en.removeAndFlush(cliente)
+        res.status(200).json({message: 'Cliente borrado'})
     }
     catch(error: any){
         res.status(500).json({message: error.message})    

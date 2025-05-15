@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  sanitizedSolicitudInput,
   findAll,
   findById,
   add,
@@ -14,3 +15,9 @@ SolicitudRouter.get('/', findAll);
 SolicitudRouter.get('/:id', findById);
 
 SolicitudRouter.post('/', add);
+
+SolicitudRouter.post('/', sanitizedSolicitudInput,add);
+
+SolicitudRouter.put('/:id', sanitizedSolicitudInput, modify)
+
+SolicitudRouter.delete('/:id', remove)

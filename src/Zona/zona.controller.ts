@@ -53,7 +53,9 @@ async function add(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function modify(req: Request, res: Response, next: NextFunction) {}
+async function modify(req: Request, res: Response, next: NextFunction){
+    
+}
 
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
