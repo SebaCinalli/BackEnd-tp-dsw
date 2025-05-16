@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  sanitizedGastronomicoInput,
   findAll,
   findById,
   add,
@@ -13,4 +14,8 @@ GastroRouter.get('/', findAll);
 
 GastroRouter.get('/:id', findById);
 
-GastroRouter.post('/', add);
+GastroRouter.post('/', sanitizedGastronomicoInput,add);
+
+GastroRouter.put('/:id', sanitizedGastronomicoInput, modify)
+
+GastroRouter.delete('/:id', remove)

@@ -1,10 +1,8 @@
 ### Obtener todos los Dj
 GET http://localhost:3000/api/dj
 
-
 ### POST un Dj
 # @name createDjClass
-
 POST http://localhost:3000/api/dj
 Content-Type: application/json
 
@@ -12,12 +10,12 @@ Content-Type: application/json
   "nombreArtistico": "Juancito",
   "estado": "Disponible",
   "montoDj": 123,
-  "foto": "algo",
+  "foto": "algo.jpg",
+  "solicitud": 1  // Añadido - ID de la solicitud existente
 }
 
 ### Crear un nuevo Dj
 # @name createDjClass2
-
 POST http://localhost:3000/api/dj
 Content-Type: application/json
 
@@ -25,16 +23,15 @@ Content-Type: application/json
   "nombreArtistico": "Juan",
   "estado": "Ocupado",
   "montoDj": 1234,
-  "foto": "algoo",
+  "foto": "algoo.jpg",
+  "solicitud": 1  // Añadido - ID de la solicitud existente
 }
 
 ### ID
 @id = {{createDjClass.response.body.data.id}}
 
 ### Obtener un Dj por ID
-
 GET http://localhost:3000/api/dj/{{id}}
-
 
 ### ID A BORRAR
 @idToDelete = {{createDjClass2.response.body.data.id}}
@@ -46,7 +43,7 @@ Content-Type: application/json
 {
   "nombreArtistico": "Juannnnn",
   "estado": "Ocupado",
-  "montoDj": 1234,
+  "montoDj": 1234
 }
 
 ### Eliminar un Dj

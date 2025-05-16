@@ -4,7 +4,7 @@ import { orm } from '../shared/db/orm.js';
 
 const en = orm.em;
 
-function sanitizedsolicitudInput(
+function sanitizedSolicitudInput(
   req: Request,
   res: Response,
   next: NextFunction
@@ -14,6 +14,11 @@ function sanitizedsolicitudInput(
     montoSalon: req.body.montoSalon,
     montosolicitud: req.body.montosolicitud,
     montoGastro: req.body.montoGastro,
+    barra: req.body.barra,
+    dj: req.body.dj,
+    salon: req.body.salon,
+    gastronomico: req.body.gastronomico,
+    clientes: req.body.cliente
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -29,12 +34,7 @@ en.getRepository(Solicitud);
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
     const solicitudes = await en.find(Solicitud, {});
-    res
-      .status(200)
-      .json({
-        message: 'todas las solicitudes encontradas',
-        data: solicitudes,
-      });
+    res.status(200).json({message: 'todas las solicitudes encontradas',data: solicitudes,});
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -60,13 +60,28 @@ async function add(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function modify(req: Request, res: Response, next: NextFunction) {}
+async function modify(req: Request, res: Response, next: NextFunction) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const solicitud = await en.findOneOrFail(Solicitud, id)
+    en.assign(solicitud, req.body.sanitizedInput)
+    await en.flush()
+    res.status(200).json({message: "solicitud modificada"})
+  }
+  catch(error: any){
+    res.status(500).json({message: error.message})
+  }
+}
 
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
+    const id = Number.parseInt(req.params.id)
+    const solicitud = en.getReference(Solicitud, id)
+    await en.removeAndFlush(solicitud)
+    res.status(200).json({message: "solicitud borrada"})
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-export { findAll, findById, add, modify, remove };
+export { sanitizedSolicitudInput,findAll, findById, add, modify, remove };

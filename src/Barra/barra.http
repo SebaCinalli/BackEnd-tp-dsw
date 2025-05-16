@@ -9,12 +9,7 @@ POST http://localhost:3000/api/barra
 Content-Type: application/json
 
 {
-  "nombre": "Juancito",
-  "apellido": "Pérez 2",
-  "email": "juan.perez@ejedsadasmplo.com",
-  "password": "contrasedsadsaña123",
-  "telefono": "123432432456789",
-  "nombreUsuario": "juanperez2"
+
 }
 
 ### Crear una nuevo barra
@@ -24,12 +19,7 @@ POST http://localhost:3000/api/barra
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
-  "apellido": "Pérez",
-  "email": "juan.perez@ejemplo.com",
-  "password": "contraseña123",
-  "telefono": "123456789",
-  "nombreUsuario": "juanperez"
+
 }
 
 ### ID
@@ -48,9 +38,7 @@ PUT http://localhost:3000/api/barra/{{id}}
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
-  "apellido": "Pérez Actualizado",
-  "email": "juan.perez.actualizado@ejemplo.com"
+
 }
 
 ### Eliminar una barra

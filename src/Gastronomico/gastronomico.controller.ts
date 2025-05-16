@@ -9,7 +9,8 @@ function sanitizedGastronomicoInput(req:Request, res:Response, next: NextFunctio
         nombre: req.body.nombre,
         tipoComida: req.body.tipoComida,
         montoG: req.body.montoG,
-        foto: req.body.foto
+        foto: req.body.foto,
+        solicitud: req.body.solicitud
     }
 
     Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -59,12 +60,24 @@ async function add(req:Request, res: Response, next: NextFunction){
 
 
 async function modify(req:Request, res:Response, next: NextFunction){
-    
+    try{
+        const id = Number.parseInt(req.params.id)
+        const gastro = await en.findOneOrFail(Gastro, id)
+        en.assign(gastro, req.body.sanitizedInput)
+        await en.flush()
+        res.status(200).json({message: "gastronomico actualizado"})
+    }
+    catch(error: any){
+        res.status(500).json({message: error.message})
+    }
 }
 
 async function remove(req:Request, res: Response, next: NextFunction){
     try{
-        
+        const id = Number.parseInt(req.params.id)
+        const gastro = en.getReference(Gastro, id)
+        await en.removeAndFlush(gastro)
+        res.status(200).json({message: "gastronomico borrado"})
     }
     catch(error:any){
         res.status(500).json({message: error.message})
@@ -74,4 +87,4 @@ async function remove(req:Request, res: Response, next: NextFunction){
 
 
 
-export{findAll, findById, add, modify, remove}
+export{sanitizedGastronomicoInput,findAll, findById, add, modify, remove}
