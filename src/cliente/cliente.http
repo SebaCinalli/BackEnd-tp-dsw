@@ -37,7 +37,7 @@ Content-Type: application/json
 
 ### Obtener un cliente por ID
 
-GET http://localhost:3000/api/cliente/{{id}}
+GET http://localhost:3000/api/cliente/1
 
 
 ### ID A BORRAR

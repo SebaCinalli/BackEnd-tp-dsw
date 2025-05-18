@@ -1,36 +1,52 @@
+// index.js or app.js
 import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
-import { ClienteRouter } from './cliente/cliente.routes.js'; // Asegúrate de que la ruta sea correcta
-import { DjRouter } from './Dj/dj.routes.js';
-import { BarraRouter } from './Barra/barra.routes.js';
+import { ClienteRouter } from './cliente/cliente.routes.js';
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
+import { BarraRouter } from './Barra/barra.routes.js';
+import { SolicitudRouter } from './Solicitud/solicitud.routes.js';
+import { DjRouter } from './Dj/dj.routes.js';
+import { GastroRouter } from './Gastronomico/gastronomico.routes.js';
+import { SalonRouter } from './Salon/salon.routes.js';
 
 const app = express();
 const PORT = 3000;
 
-app.use(express.json()); // Middleware para parsear JSON en el cuerpo de las peticiones
+app.use(express.json()); // Middleware para parsear JSON
 
-//luego de los middleware base como express.json() o cors
-
+// Create MikroORM RequestContext for each request
 app.use((req: Request, res: Response, next: NextFunction) => {
-  RequestContext.create(orm.em, next); // Crea un contexto de solicitud para MikroORM.
-  //sirve para que cada request tenga su propio contexto de base de datos y no se mezclen las transacciones
-  //esto es necesario para que MikroORM funcione correctamente en un entorno de servidor
-  // siempre se ejecuta antes de las rutas y middlewares de negocio
+  RequestContext.create(orm.em, next);
 });
 
-// antes de las rutas y middlewares de negocio
-
-app.use('/api/cliente', ClienteRouter); // Asegúrate de que la ruta sea correcta
+// API Routes
 app.use('/api/dj', DjRouter);
+app.use('/api/cliente', ClienteRouter);
 app.use('/api/barra', BarraRouter);
+app.use('/api/gastro', GastroRouter);
+app.use('/api/salon', SalonRouter);
+app.use('/api/solicitud', SolicitudRouter);
 
-app.use((_, res) => {
+// 404 handler - should be AFTER all other routes
+app.use((_, res: Response) => {
   res.status(404).send({ error: 'Ruta no encontrada' });
 });
 
-await syncSchema(); // Sincroniza el esquema de la base de datos al iniciar el servidor. solo en desarrollo
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+// Error handler - should be the last middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send({ error: 'Error del servidor', message: err.message });
 });
+
+async function startServer() {
+  try {
+    await syncSchema(); // Sync database schema
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Error al iniciar el servidor:', error);
+  }
+}
+startServer()

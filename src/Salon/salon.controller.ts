@@ -4,12 +4,13 @@ import { orm } from '../shared/db/orm.js';
 
 const en = orm.em;
 
-function sanitizedsalonInput(req: Request, res: Response, next: NextFunction) {
+function sanitizedSalonInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
     estado: req.body.tipoBebida,
     montoS: req.body.montoB,
     foto: req.body.foto,
+    solcitud: req.body.solicitud
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -53,13 +54,27 @@ async function add(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function modify(req: Request, res: Response, next: NextFunction) {}
+async function modify(req: Request, res: Response, next: NextFunction) {
+  try{
+    const id = Number.parseInt(req.params.id)
+    const salon = await en.findOneOrFail(Salon, id)
+    en.assign(salon, req.body.sanitizedInput)
+    await en.flush()
+    res.status(200).json({message: "salon actualizado"})
+  }
+  catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }}
 
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
+    const id = Number.parseInt(req.params.id)
+    const salon = en.getReference(Salon, id)
+    await en.removeAndFlush(salon)
+    res.status(200).json({message: "salon borrado"})
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-export { findAll, findById, add, modify, remove };
+export { sanitizedSalonInput, findAll, findById, add, modify, remove };
