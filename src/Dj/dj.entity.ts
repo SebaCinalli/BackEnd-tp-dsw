@@ -1,4 +1,4 @@
-// dj.entity.js
+ // dj.entity.js
 import { Entity, Property, ManyToOne, Rel } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 import { Solicitud } from '../Solicitud/solicitud.entity.js';

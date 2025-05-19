@@ -1,0 +1,47 @@
+### Obtener todos los salones
+GET http://localhost:3000/api/salon
+### POST un salon
+# @name createSalonClass
+POST http://localhost:3000/api/salon
+Content-Type: application/json
+
+{
+  "nombreSalon": "Salon A",
+  "estado": "Disponible",
+  "montoDj": 1234,
+    "capacidad": 100,
+  "foto": "algo.jpg",
+  "solicitud": 1  // Añadido - ID de la solicitud existente
+}
+### Crear un nuevo salon
+# @name createSalonClass2
+POST http://localhost:3000/api/salon
+Content-Type: application/json
+
+{
+  "nombreSalon": "Salon B",
+  "estado": "Ocupado",
+  "montoDj": 1234,
+  "foto": "algoo.jpg",
+  "capacidad": 100,
+  "solicitud": 1  // Añadido - ID de la solicitud existente
+}
+### ID
+@id = {{createSalonClass.response.body.data.id}}
+### Obtener un salon por ID
+GET http://localhost:3000/api/salon/{{id}}
+### ID A BORRAR
+@idToDelete = {{createSalonClass2.response.body.data.id}}
+### Actualizar un salon existente
+PUT http://localhost:3000/api/salon/{{id}}
+Content-Type: application/json
+
+{
+  "nombreSalon": "Salon A Actualizado",
+  "estado": "Ocupado",
+  "montoDj": 1234,
+  "capacidad": 150
+  "foto": "algo_actualizado.jpg"
+}
+### Eliminar un salon
+DELETE http://localhost:3000/api/salon/{{idToDelete}}

@@ -12,6 +12,8 @@ export class Salon extends BaseEntity {
 
   @Property({ nullable: false })
   montoS!: number;
+  @Property({ nullable: false })
+  capacidadS!: number;
 
   @Property({ unique: true })
   foto!: string;

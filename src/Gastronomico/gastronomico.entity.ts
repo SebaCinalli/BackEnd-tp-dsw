@@ -5,7 +5,7 @@ import { Solicitud } from '../Solicitud/solicitud.entity.js';
 @Entity()
 export class Gastro extends BaseEntity {
   @Property({ nullable: false, unique: true })
-  nombre!: string;
+  nombreG!: string;
 
   @Property({ nullable: false })
   tipoComida!: string;

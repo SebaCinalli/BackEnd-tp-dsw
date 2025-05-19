@@ -27,7 +27,7 @@ en.getRepository(Gastro)
 async function findAll(req:Request, res: Response, next: NextFunction){
     try{
         const gastronom = await en.find(Gastro, {})
-        res.status(200).json({message: 'todas las barras encontradas', data: gastronom})
+        res.status(200).json({message: 'Todas los gastronomicos encontrados', data: gastronom})
     }
     catch(error:any){
         res.status(500).json({message: error.message})

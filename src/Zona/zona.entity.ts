@@ -1,18 +1,11 @@
-import { Entity, Property } from '@mikro-orm/core';
+import { Entity, OneToMany, Property, Cascade, Collection } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 
 
 @Entity()
 export class Zona extends BaseEntity {
-  /*@Property({nullable: false, unique: true})
-    nombre !: string
-
-    @Property({nullable: false, unique: true})
-    tipoBebida !: string
-
-    @Property({nullable: false, unique: true})
-    montoB !: number
-
-    @Property()
-    foto !: string[]*/
+  @Property({nullable: false, unique: true})
+    nombreZ !: string
+@OneToMany(() => Zona, (zona) => zona.nombreZ, {cascade: [Cascade.ALL]})
+    zonas = new Collection<Zona>(this)
 }

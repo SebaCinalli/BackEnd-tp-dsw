@@ -1,0 +1,44 @@
+### obtener todos los gastronomicos
+GET http://localhost:3000/api/gastronomico
+### POST un gastronomico
+# @name createGastronomicoClass
+POST http://localhost:3000/api/gastronomico
+Content-Type: application/json
+
+{
+  "nombreG": "Gastronomico A",
+  "tipoComida": "Comida Rapida",
+  "montoG": 1234,
+  "foto": "algo.jpg",
+  "solicitud": 1  // Añadido - ID de la solicitud existente
+}   
+### Crear un nuevo gastronomico
+# @name createGastronomicoClass2
+POST http://localhost:3000/api/gastronomico 
+Content-Type: application/json
+
+{
+  "nombreGastronomico": "Gastronomico B",
+  "tipoComida": "Comida Rapida",
+  "montoG": 1234,
+  "foto": "algoo.jpg",
+  "solicitud": 1  // Añadido - ID de la solicitud existente
+}
+### ID
+@id = {{createGastronomicoClass.response.body.data.id}}
+### Obtener un gastronomico por ID
+GET http://localhost:3000/api/gastronomico/{{id}}
+### ID A BORRAR
+@idToDelete = {{createGastronomicoClass2.response.body.data.id}}
+### Actualizar un gastronomico existente
+PUT http://localhost:3000/api/gastronomico/{{id}}
+Content-Type: application/json
+
+{
+  "nombreGastronomico": "Gastronomico A Actualizado",
+  "tipoComida": "Comida Rapida",
+  "montoG": 1234,
+  "foto": "algo_actualizado.jpg"
+}
+### Eliminar un gastronomico
+DELETE http://localhost:3000/api/gastronomico/{{idToDelete}}
