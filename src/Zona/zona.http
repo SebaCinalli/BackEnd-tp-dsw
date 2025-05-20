@@ -7,7 +7,7 @@ POST http://localhost:3000/api/zona
 Content-Type: application/json
 
 {
-  "nombreZ": "Zona1"
+  "nombre": "Zona1"
 }
 ### Crear una nueva zona
 # @name createZonaClass2
@@ -15,7 +15,7 @@ POST http://localhost:3000/api/zona
 Content-Type: application/json
 
 {
-  "nombreZ": "Zona2"
+  "nombre": "Zona2"
 }
 ### ID
 @id = {{createZonaClass.response.body.data.id}}
@@ -28,7 +28,7 @@ PUT http://localhost:3000/api/zona/{{id}}
 Content-Type: application/json
 
 {
-  "nombreZ": "Zona Actualizada"
+  "nombre": "Zona Actualizada"
 }
 ### Eliminar una zona
 DELETE http://localhost:3000/api/zona/{{idToDelete}}
