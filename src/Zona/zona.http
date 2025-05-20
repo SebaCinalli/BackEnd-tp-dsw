@@ -1,0 +1,34 @@
+## Obtener las zonas
+
+GET http://localhost:3000/api/zona
+### POST una zona
+# @name createZonaClass
+POST http://localhost:3000/api/zona
+Content-Type: application/json
+
+{
+  "nombreZ": "Zona1"
+}
+### Crear una nueva zona
+# @name createZonaClass2
+POST http://localhost:3000/api/zona
+Content-Type: application/json
+
+{
+  "nombreZ": "Zona2"
+}
+### ID
+@id = {{createZonaClass.response.body.data.id}}
+### Obtener una zona por ID
+GET http://localhost:3000/api/zona/1
+### ID A BORRAR
+@idToDelete = {{createZonaClass2.response.body.data.id}}
+### Actualizar una zona existente
+PUT http://localhost:3000/api/zona/{{id}}
+Content-Type: application/json
+
+{
+  "nombreZ": "Zona Actualizada"
+}
+### Eliminar una zona
+DELETE http://localhost:3000/api/zona/{{idToDelete}}
