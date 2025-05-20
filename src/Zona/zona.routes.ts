@@ -1,10 +1,17 @@
 import { Router } from 'express';
-import { findAll, findById, add, modify, remove } from './zona.controller.js';
+import {
+  sanitizedZonaInput,
+  findAll,
+  findById,
+  add,
+  modify,
+  remove,
+} from './zona.controller.js';
 
 export const ZonaRouter = Router();
 
 ZonaRouter.get('/', findAll);
-
 ZonaRouter.get('/:id', findById);
-
-ZonaRouter.post('/', add);
+ZonaRouter.post('/', sanitizedZonaInput, add);
+ZonaRouter.put('/:id', sanitizedZonaInput, modify);
+ZonaRouter.delete('/:id', remove);
