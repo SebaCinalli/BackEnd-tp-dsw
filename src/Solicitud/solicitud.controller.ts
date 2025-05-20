@@ -33,7 +33,7 @@ en.getRepository(Solicitud);
 
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
-    const solicitudes = await en.find(Solicitud, {});
+    const solicitudes = await en.find(Solicitud, {}, {populate: ['clientes', 'dj', 'salon', 'barra', 'gastronomico']});
     res.status(200).json({message: 'todas las solicitudes encontradas',data: solicitudes,});
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -43,7 +43,7 @@ async function findAll(req: Request, res: Response, next: NextFunction) {
 async function findById(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
-    const solicitud = await en.findOneOrFail(Solicitud, id);
+    const solicitud = await en.findOneOrFail(Solicitud, id,  {populate: ['clientes', 'dj', 'salon', 'barra', 'gastronomico']});
     res.status(200).json({ message: 'solicitud encontrada', data: solicitud });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

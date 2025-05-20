@@ -2,6 +2,7 @@
 import { Entity, Property, ManyToOne, Rel } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 import { Solicitud } from '../Solicitud/solicitud.entity.js';
+import { Zona } from '../Zona/zona.entity.js';
 
 @Entity()
 export class Dj extends BaseEntity {
@@ -19,4 +20,7 @@ export class Dj extends BaseEntity {
 
   @ManyToOne(() => Solicitud, { nullable: true }) 
   solicitud?: Rel<Solicitud>;
+
+  @ManyToOne(() => Zona, { nullable: false })
+    zona!: Rel<Zona>;
 }

@@ -6,10 +6,11 @@ const en = orm.em;
 
 function sanitizedzonaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    /*nombre: req.body.nombre,
-    tipoBebida: req.body.tipoBebida,
-    montoB: req.body.montoB,
-    foto: req.body.foto,*/
+    nombre: req.body.nombre,
+    dj: req.body.dj,
+    salon: req.body.salon,
+    barra: req.body.barra,
+    gastronomico: req.body.gastronomico,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
