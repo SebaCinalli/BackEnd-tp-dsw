@@ -5,7 +5,6 @@ import { Salon } from '../Salon/salon.entity.js';
 import { Barra } from '../Barra/barra.entity.js';
 import { Gastro } from '../Gastronomico/gastronomico.entity.js';
 
-
 @Entity()
 export class Zona extends BaseEntity {
   @Property({nullable: false, unique: true})

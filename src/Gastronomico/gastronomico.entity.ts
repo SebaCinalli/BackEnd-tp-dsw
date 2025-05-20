@@ -6,7 +6,7 @@ import { Zona } from '../Zona/zona.entity.js';
 @Entity()
 export class Gastro extends BaseEntity {
   @Property({ nullable: false, unique: true })
-  nombre!: string;
+  nombreG!: string;
 
   @Property({ nullable: false })
   tipoComida!: string;

@@ -7,8 +7,9 @@ const en = orm.em;
 function sanitizedSalonInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
-    estado: req.body.tipoBebida,
-    montoS: req.body.montoB,
+    estado: req.body.estado,
+    montoS: req.body.montoS,
+    capacidadS: req.body.capacidadS,
     foto: req.body.foto,
     solcitud: req.body.solicitud
   };

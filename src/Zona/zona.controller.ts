@@ -4,7 +4,7 @@ import { orm } from '../shared/db/orm.js';
 
 const en = orm.em;
 
-function sanitizedzonaInput(req: Request, res: Response, next: NextFunction) {
+function sanitizedZonaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
     dj: req.body.dj,
@@ -21,20 +21,20 @@ function sanitizedzonaInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-en.getRepository(Zona);
+//en.getRepository(Zona);
 
-async function findAll(req: Request, res: Response, next: NextFunction) {
+async function findAll(req: Request, res: Response) {
   try {
-    const zonas = await en.find(Zona, {});
+    const Zonas = await en.find(Zona, {});
     res
       .status(200)
-      .json({ message: 'todas las zonas encontradas', data: zonas });
+      .json({ message: 'todas las zonas encontradas', data: Zonas });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-async function findById(req: Request, res: Response, next: NextFunction) {
+async function findById(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const zona = await en.findOneOrFail(Zona, id);
@@ -44,7 +44,7 @@ async function findById(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function add(req: Request, res: Response, next: NextFunction) {
+async function add(req: Request, res: Response) {
   try {
     const zona = en.create(Zona, req.body.sanitizedInput);
     await en.flush();
@@ -54,15 +54,27 @@ async function add(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function modify(req: Request, res: Response, next: NextFunction){
-    
-}
-
-async function remove(req: Request, res: Response, next: NextFunction) {
+async function modify(req: Request, res: Response) {
   try {
+    const id = Number.parseInt(req.params.id);
+    const zona = await en.findOneOrFail(Zona, id);
+    en.assign(zona, req.body.sanitizedInput);
+    await en.flush();
+    res.status(200).json({ message: 'zona modificada', data: zona });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-export { findAll, findById, add, modify, remove };
+async function remove(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id);
+    const zona = en.getReference(Zona, id);
+    await en.removeAndFlush(zona);
+    res.status(200).json({ message: 'Zona borrada' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export { sanitizedZonaInput, findAll, findById, add, modify, remove };

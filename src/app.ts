@@ -9,6 +9,7 @@ import { SolicitudRouter } from './Solicitud/solicitud.routes.js';
 import { DjRouter } from './Dj/dj.routes.js';
 import { GastroRouter } from './Gastronomico/gastronomico.routes.js';
 import { SalonRouter } from './Salon/salon.routes.js';
+import { ZonaRouter } from './Zona/zona.routes.js';
 
 const app = express();
 const PORT = 3000;
@@ -27,6 +28,7 @@ app.use('/api/barra', BarraRouter);
 app.use('/api/gastro', GastroRouter);
 app.use('/api/salon', SalonRouter);
 app.use('/api/solicitud', SolicitudRouter);
+app.use('/api/zona', ZonaRouter);
 
 // 404 handler - should be AFTER all other routes
 app.use((_, res: Response) => {
@@ -49,4 +51,4 @@ async function startServer() {
     console.error('Error al iniciar el servidor:', error);
   }
 }
-startServer()
+startServer();
