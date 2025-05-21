@@ -1,4 +1,4 @@
-import { Property, Entity, ManyToOne, Cascade, Rel} from "@mikro-orm/core";
+import { Property, Entity, OneToMany, Cascade, Collection} from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.js";
 import { Solicitud } from "../Solicitud/solicitud.entity.js";
 
@@ -22,7 +22,7 @@ export class Cliente extends BaseEntity {
   @Property({ length: 50, unique: true, fieldName: 'nombre_usuario', nullable: false })  // Mapea a snake_case
   nombreUsuario!: string;
 
-  @ManyToOne(() => Solicitud, {nullable: false})
-  solicitud !: Rel<Solicitud>
-
+  @OneToMany(() => Solicitud, solicitud => solicitud.cliente, {cascade: [Cascade.ALL]})
+    solicitud = new Collection<Solicitud>(this)
+  
 }

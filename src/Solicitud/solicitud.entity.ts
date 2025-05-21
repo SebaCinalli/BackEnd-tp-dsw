@@ -1,4 +1,4 @@
-import { Cascade, Collection, Entity, OneToMany, Property, } from '@mikro-orm/core';
+import {Entity, ManyToOne, Property, Rel} from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 import { Cliente } from '../cliente/cliente.entity.js';
 import { Dj } from '../Dj/dj.entity.js';
@@ -20,18 +20,18 @@ export class Solicitud extends BaseEntity {
   @Property({ nullable: false, unique: true })
   montoGastro!: number;
   
-  @OneToMany(()=> Cliente, cliente => cliente.solicitud, {cascade: [Cascade.ALL]})
-  clientes = new Collection<Cliente>(this)
+  @ManyToOne(()=> Cliente, {nullable: false})
+  cliente !: Rel<Cliente>;
 
-  @OneToMany(()=> Dj, dj => dj.solicitud, {cascade: [Cascade.ALL]})
-  dj = new Collection<Dj>(this)
+  @ManyToOne(()=> Dj, {nullable: false})
+  dj !: Rel<Dj>
 
-  @OneToMany(()=> Salon, salon => salon.solicitud, {cascade: [Cascade.ALL]})
-  salon = new Collection<Salon>(this)
+  @ManyToOne(()=> Salon,{nullable: false})
+  salon !: Rel<Salon>
 
-  @OneToMany(()=> Barra, barra => barra.solicitud, {cascade: [Cascade.ALL]})
-  barra = new Collection<Barra>(this)
+  @ManyToOne(()=> Barra, {nullable: false})
+  barra !: Rel<Barra>
 
-  @OneToMany(()=> Gastro, gastro => gastro.solicitud, {cascade: [Cascade.ALL]})
-  gastronomico = new Collection<Gastro>(this)
+  @ManyToOne(()=> Gastro, {nullable: false})
+  gastronomico !:  Rel<Gastro>
 }

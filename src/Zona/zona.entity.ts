@@ -1,9 +1,8 @@
 import {
   Entity,
-  OneToMany,
+  ManyToOne,
   Property,
-  Cascade,
-  Collection,
+  Rel,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 import { Dj } from '../Dj/dj.entity.js';
@@ -16,15 +15,15 @@ export class Zona extends BaseEntity {
   @Property({ nullable: false, unique: true })
   nombre!: string;
 
-  @OneToMany(() => Dj, (dj) => dj.zona, { cascade: [Cascade.ALL] })
-  dj = new Collection<Dj>(this);
+  @ManyToOne(() => Dj, { nullable: false })
+  dj !: Rel<Dj>;
 
-  @OneToMany(() => Salon, (salon) => salon.zona, { cascade: [Cascade.ALL] })
-  salon = new Collection<Salon>(this);
+  @ManyToOne(() => Salon, { nullable: false })
+  salon !: Rel<Salon>;
 
-  @OneToMany(() => Barra, (barra) => barra.zona, { cascade: [Cascade.ALL] })
-  barra = new Collection<Barra>(this);
+  @ManyToOne(() => Barra, { nullable: false })
+  barra !: Rel<Barra>;
 
-  @OneToMany(() => Gastro, (gastro) => gastro.zona, { cascade: [Cascade.ALL] })
-  gastronomico = new Collection<Gastro>(this);
+  @ManyToOne(() => Gastro, { nullable: false })
+  gastronomico !: Rel<Gastro>;
 }
