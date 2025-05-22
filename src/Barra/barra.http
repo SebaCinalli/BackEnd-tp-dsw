@@ -29,10 +29,7 @@ PUT http://localhost:3000/api/barra/{{id}}
 Content-Type: application/json
 
 {
-  "nombreB": "Barra actualizada",
-  "tipoBebida": "cerveza",
-  "montoB": 1234,
-  "foto": "algoo.jpg"
+  "nombreB": "Barra actualizada"
 }
 
 ### Eliminar una barra

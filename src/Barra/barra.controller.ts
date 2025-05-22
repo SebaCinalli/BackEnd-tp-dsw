@@ -6,7 +6,7 @@ const en = orm.em;
 
 function sanitizedBarraInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    nombreB: req.body.nombre,
+    nombreB: req.body.nombreB,
     tipoBebida: req.body.tipoBebida,
     montoB: req.body.montoB,
     foto: req.body.foto,
@@ -56,7 +56,7 @@ async function modify(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id)
     const barra = await en.findOneOrFail(Barra, id)
-    en.assign(barra, req.body.sanitizedBarraInput)
+    en.assign(barra, req.body.sanitizedInput)
     await en.flush()
     res.status(200).json({message: "barra modificada", data: barra})
   }
