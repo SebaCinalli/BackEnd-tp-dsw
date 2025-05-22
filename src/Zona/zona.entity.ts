@@ -22,7 +22,7 @@ export class Zona extends BaseEntity {
   @OneToMany(() => Salon, (salon) => salon.zona, {cascade: [Cascade.ALL]})
   salon = new Collection<Salon>(this);
 
-  @OneToMany(() => Barra, (barra) => barra.zona, {cascade: [Cascade.ALL]})
+  @OneToMany(() => Barra, barra => barra.zona, {cascade: [Cascade.ALL]})
   barra = new Collection<Barra>(this);
 
   @OneToMany(() => Dj, (dj) => dj.zona, {cascade: [Cascade.ALL]})

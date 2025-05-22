@@ -11,6 +11,7 @@ function sanitizedDjInput(req: Request, res: Response, next: NextFunction) {
       estado: req.body.estado,
       montoDj: req.body.montoDj,
       foto: req.body.foto,
+      zona: req.body.zona,
     };
 
     Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -26,9 +27,9 @@ function sanitizedDjInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
-    console.log("findAll llamado");
+    console.log('findAll llamado');
     const djs = await em.find(Dj, {});
-    console.log("Found DJs:", djs);
+    console.log('Found DJs:', djs);
     res.status(200).json({ message: 'todos los dj encontrados', data: djs });
   } catch (error: any) {
     next(error);
@@ -48,10 +49,10 @@ async function findById(req: Request, res: Response, next: NextFunction) {
 async function add(req: Request, res: Response, next: NextFunction) {
   try {
     const dj = em.create(Dj, req.body.sanitizedInput);
-    await em.flush()
+    await em.flush();
     res.status(201).json({ message: 'dj creado', data: dj });
-  }catch (error: any) {
-    res.status(500).json({message:error.message})
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 }
 

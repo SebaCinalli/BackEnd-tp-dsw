@@ -10,7 +10,8 @@ Content-Type: application/json
   "nombreArtistico": "Juancito",
   "estado": "Disponible",
   "montoDj": 123,
-  "foto": "algo.jpg"
+  "foto": "algo.jpg",
+  "zona": 1
 }
 
 ### Crear un nuevo Dj
@@ -22,7 +23,8 @@ Content-Type: application/json
   "nombreArtistico": "Juan",
   "estado": "Ocupado",
   "montoDj": 1234,
-  "foto": "algoo.jpg"
+  "foto": "algoo.jpg",
+  "zona": 1
 }
 
 ### ID

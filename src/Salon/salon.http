@@ -10,7 +10,8 @@ Content-Type: application/json
   "estado": "Disponible",
   "montoS": 1234,
   "capacidad": 100,
-  "foto": "algo.jpg"
+  "foto": "algo.jpg",
+  "zona": 1
 }
 ### Crear un nuevo salon
 # @name createSalonClass2
@@ -22,7 +23,8 @@ Content-Type: application/json
   "estado": "Ocupado",
   "montoS": 1234,
   "foto": "algoo.jpg",
-  "capacidad": 100
+  "capacidad": 100,
+  "zona": 1
 }
 ### ID
 @id = {{createSalonClass.response.body.data.id}}

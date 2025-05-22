@@ -7,11 +7,7 @@ POST http://localhost:3000/api/zona
 Content-Type: application/json
 
 {
-  "nombre": "Zona1",
-  "dj": 1,
-  "salon": 1,
-  "gastronomico": 1,
-  "barra": 1
+  "nombre": "Zona1"
 }
 ### Crear una nueva zona
 # @name createZonaClass2
@@ -19,11 +15,7 @@ POST http://localhost:3000/api/zona
 Content-Type: application/json
 
 {
-  "nombre": "Zona2",
-  "dj": 2,
-  "salon": 2, 
-  "gastronomico": 2,
-  "barra": 2
+  "nombre": "Zona2"
 }
 ### ID
 @id = {{createZonaClass.response.body.data.id}}

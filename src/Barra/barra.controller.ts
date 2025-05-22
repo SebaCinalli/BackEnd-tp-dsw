@@ -11,6 +11,7 @@ function sanitizedBarraInput(req: Request, res: Response, next: NextFunction) {
     montoB: req.body.montoB,
     foto: req.body.foto,
     solicitud: req.body.solicitud,
+    zona: req.body.zona
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

@@ -10,7 +10,8 @@ Content-Type: application/json
   "nombreG": "Gastronomico A",
   "tipoComida": "Comida Rapida",
   "montoG": 1234,
-  "foto": "algo.jpg"
+  "foto": "algo.jpg",
+  "zona": 1
 }   
 ### Crear un nuevo gastronomico
 # @name createGastronomicoClass2
@@ -21,7 +22,8 @@ Content-Type: application/json
   "nombreG": "Gastronomico B",
   "tipoComida": "Comida Rapida",
   "montoG": 1234,
-  "foto": "algoo.jpg"
+  "foto": "algoo.jpg",
+  "zona": 1
 }
 ### ID
 @id = {{createGastronomicoClass.response.body.data.id}}
