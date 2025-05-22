@@ -6,11 +6,11 @@ const en = orm.em;
 
 function sanitizedBarraInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    nombreB: req.body.nombre,
+    nombreB: req.body.nombreB,
     tipoBebida: req.body.tipoBebida,
     montoB: req.body.montoB,
     foto: req.body.foto,
-    solicitud: req.body.solicitud
+    solicitud: req.body.solicitud,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -54,28 +54,25 @@ async function add(req: Request, res: Response, next: NextFunction) {
 
 async function modify(req: Request, res: Response, next: NextFunction) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const barra = await en.findOneOrFail(Barra, id)
-    en.assign(barra, req.body.sanitizedBarraInput)
-    await en.flush()
-    res.status(200).json({message: "barra modificada", data: barra})
-  }
-  catch (error: any) {
+    const id = Number.parseInt(req.params.id);
+    const barra = await en.findOneOrFail(Barra, id);
+    en.assign(barra, req.body.sanitizedInput);
+    await en.flush();
+    res.status(200).json({ message: 'barra modificada', data: barra });
+  } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
-
 }
 
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const barra = en.getReference(Barra, id)
-    await en.removeAndFlush(barra)
-    res.status(200).json({message: "barra borrada"})
-  }
-  catch (error: any) {
+    const id = Number.parseInt(req.params.id);
+    const barra = en.getReference(Barra, id);
+    await en.removeAndFlush(barra);
+    res.status(200).json({ message: 'barra borrada' });
+  } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-export { sanitizedBarraInput,findAll, findById, add, modify, remove };
+export { sanitizedBarraInput, findAll, findById, add, modify, remove };
