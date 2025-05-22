@@ -6,12 +6,11 @@ POST http://localhost:3000/api/salon
 Content-Type: application/json
 
 {
-  "nombreSalon": "Salon A",
+  "nombre": "Salon A",
   "estado": "Disponible",
-  "montoDj": 1234,
-    "capacidad": 100,
-  "foto": "algo.jpg",
-  "solicitud": 1  // Añadido - ID de la solicitud existente
+  "montoS": 1234,
+  "capacidad": 100,
+  "foto": "algo.jpg"
 }
 ### Crear un nuevo salon
 # @name createSalonClass2
@@ -19,12 +18,11 @@ POST http://localhost:3000/api/salon
 Content-Type: application/json
 
 {
-  "nombreSalon": "Salon B",
+  "nombre": "Salon B",
   "estado": "Ocupado",
-  "montoDj": 1234,
+  "montoS": 1234,
   "foto": "algoo.jpg",
-  "capacidad": 100,
-  "solicitud": 1  // Añadido - ID de la solicitud existente
+  "capacidad": 100
 }
 ### ID
 @id = {{createSalonClass.response.body.data.id}}

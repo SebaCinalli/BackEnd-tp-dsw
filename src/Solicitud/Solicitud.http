@@ -1,0 +1,38 @@
+###GET ALL
+
+GET http://localhost:3000/api/solicitud
+
+
+###POST
+# @name createSolicitudClass
+
+POST http://localhost:3000/api/solicitud
+Content-Type: application/json
+
+{
+    "cliente": 1,
+    "dj": 1,
+    "salon": 1,
+    "gastronomico": 1,
+    "barra": 1,
+    "fechaSolicitud": "21/05/2025",
+    "estado": "activa"   
+}
+
+### GET ONE
+@id = {{createSolicitudClass.response.body.data.id}}
+
+GET http://localhost:3000/api/solicitud/{{id}}
+
+### PUT
+
+PUT http://localhost:3000/api/solicitud/{{id}}
+Content-Type: application/json
+
+{
+    "estado": "cancelada"
+}
+
+###DELETE
+
+DELETE http://localhost:3000/api/solicitud/{{id}}

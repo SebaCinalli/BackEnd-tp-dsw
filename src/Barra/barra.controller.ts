@@ -6,7 +6,7 @@ const en = orm.em;
 
 function sanitizedBarraInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    nombre: req.body.nombre,
+    nombreB: req.body.nombre,
     tipoBebida: req.body.tipoBebida,
     montoB: req.body.montoB,
     foto: req.body.foto,

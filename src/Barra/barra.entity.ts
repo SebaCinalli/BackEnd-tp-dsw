@@ -6,7 +6,7 @@ import { Zona } from '../Zona/zona.entity.js';
 @Entity()
 export class Barra extends BaseEntity {
   @Property({ nullable: false, unique: true })
-  nombre!: string;
+  nombreB!: string;
 
   @Property({ nullable: false })
   tipoBebida!: string;
@@ -18,8 +18,8 @@ export class Barra extends BaseEntity {
   foto!: string;
 
   @OneToMany(() => Solicitud, solicitud => solicitud.barra, {cascade: [Cascade.ALL]})
-    solicitud = new Collection<Solicitud>(this)
+  solicitud = new Collection<Solicitud>(this)
   
-    @OneToMany(() => Zona, zona => zona.barra, {cascade: [Cascade.ALL]})
-    zona = new Collection<Zona>(this)
+  @OneToMany(() => Zona, zona => zona.barra, {cascade: [Cascade.ALL]})
+  zona = new Collection<Zona>(this)
 }

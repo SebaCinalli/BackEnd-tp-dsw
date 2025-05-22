@@ -18,7 +18,9 @@ function sanitizedSolicitudInput(
     dj: req.body.dj,
     salon: req.body.salon,
     gastronomico: req.body.gastronomico,
-    cliente: req.body.cliente
+    cliente: req.body.cliente,
+    fechaSolicitud: req.body.fechaSolicitud,
+    estado: req.body.estado
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

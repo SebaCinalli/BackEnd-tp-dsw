@@ -9,7 +9,7 @@ function sanitizedSalonInput(req: Request, res: Response, next: NextFunction) {
     nombre: req.body.nombre,
     estado: req.body.estado,
     montoS: req.body.montoS,
-    capacidadS: req.body.capacidadS,
+    capacidad: req.body.capacidad,
     foto: req.body.foto,
     solcitud: req.body.solicitud
   };

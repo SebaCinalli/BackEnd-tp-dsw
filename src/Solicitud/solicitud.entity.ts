@@ -34,4 +34,10 @@ export class Solicitud extends BaseEntity {
 
   @ManyToOne(()=> Gastro, {nullable: false})
   gastronomico !:  Rel<Gastro>
+
+  @Property({nullable: false})
+  fechaSolicitud !: Date
+  
+  @Property({nullable: false})
+  estado !: string
 }

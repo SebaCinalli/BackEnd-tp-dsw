@@ -6,7 +6,7 @@ const en = orm.em
 
 function sanitizedGastronomicoInput(req:Request, res:Response, next: NextFunction){
     req.body.sanitizedInput = {
-        nombre: req.body.nombre,
+        nombreG: req.body.nombreG,
         tipoComida: req.body.tipoComida,
         montoG: req.body.montoG,
         foto: req.body.foto,

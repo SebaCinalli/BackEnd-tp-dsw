@@ -1,5 +1,6 @@
 ### obtener todos los gastronomicos
 GET http://localhost:3000/api/gastronomico
+
 ### POST un gastronomico
 # @name createGastronomicoClass
 POST http://localhost:3000/api/gastronomico
@@ -9,8 +10,7 @@ Content-Type: application/json
   "nombreG": "Gastronomico A",
   "tipoComida": "Comida Rapida",
   "montoG": 1234,
-  "foto": "algo.jpg",
-  "solicitud": 1  // Añadido - ID de la solicitud existente
+  "foto": "algo.jpg"
 }   
 ### Crear un nuevo gastronomico
 # @name createGastronomicoClass2
@@ -18,11 +18,10 @@ POST http://localhost:3000/api/gastronomico
 Content-Type: application/json
 
 {
-  "nombreGastronomico": "Gastronomico B",
+  "nombreG": "Gastronomico B",
   "tipoComida": "Comida Rapida",
   "montoG": 1234,
-  "foto": "algoo.jpg",
-  "solicitud": 1  // Añadido - ID de la solicitud existente
+  "foto": "algoo.jpg"
 }
 ### ID
 @id = {{createGastronomicoClass.response.body.data.id}}
@@ -35,7 +34,7 @@ PUT http://localhost:3000/api/gastronomico/{{id}}
 Content-Type: application/json
 
 {
-  "nombreGastronomico": "Gastronomico A Actualizado",
+  "nombreG": "Gastronomico A Actualizado",
   "tipoComida": "Comida Rapida",
   "montoG": 1234,
   "foto": "algo_actualizado.jpg"

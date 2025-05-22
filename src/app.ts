@@ -25,7 +25,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/dj', DjRouter);
 app.use('/api/cliente', ClienteRouter);
 app.use('/api/barra', BarraRouter);
-app.use('/api/gastro', GastroRouter);
+app.use('/api/gastronomico', GastroRouter);
 app.use('/api/salon', SalonRouter);
 app.use('/api/solicitud', SolicitudRouter);
 app.use('/api/zona', ZonaRouter);

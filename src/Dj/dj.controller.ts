@@ -11,7 +11,6 @@ function sanitizedDjInput(req: Request, res: Response, next: NextFunction) {
       estado: req.body.estado,
       montoDj: req.body.montoDj,
       foto: req.body.foto,
-      solicitud: req.body.solicitud,
     };
 
     Object.keys(req.body.sanitizedInput).forEach((key) => {
