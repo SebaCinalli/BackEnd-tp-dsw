@@ -15,7 +15,18 @@ Content-Type: application/json
   "foto": "algoo.jpg"
 }
 
+### POST una barra
+# @name createBarraClass2
 
+POST http://localhost:3000/api/barra
+Content-Type: application/json
+
+{
+  "nombreB": "Barraaaa B",
+  "tipoBebida": "cervezaa",
+  "montoB": 12345,
+  "foto": "algooo.jpg"
+}
 
 ### ID
 @id = {{createBarraClass.response.body.data.id}}
