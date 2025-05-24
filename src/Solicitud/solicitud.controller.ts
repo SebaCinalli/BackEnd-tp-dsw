@@ -34,10 +34,6 @@ function sanitizedSolicitudInput(
     barra: req.body.barra,
     fechaSolicitud: fechaSolicitud,
     estado: req.body.estado,
-    montoDj: req.body.montoDj,
-    montoSalon: req.body.montoSalon,
-    montoBarra: req.body.montoBarra,
-    montoGastro: req.body.montoGastro,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -88,10 +84,7 @@ async function add(req: Request, res: Response, next: NextFunction) {
     const dj = await en.findOneOrFail(Dj, req.body.sanitizedInput.dj);
     const salon = await en.findOneOrFail(Salon, req.body.sanitizedInput.salon);
     const barra = await en.findOneOrFail(Barra, req.body.sanitizedInput.barra);
-    const gastronomico = await en.findOneOrFail(
-      Gastro,
-      req.body.sanitizedInput.gastronomico
-    );
+    const gastronomico = await en.findOneOrFail(Gastro, req.body.sanitizedInput.gastronomico);
 
     // Si no se proporcionaron montos, usar los precios de las entidades
     // (asumiendo que las entidades tienen propiedades de precio)
@@ -103,15 +96,11 @@ async function add(req: Request, res: Response, next: NextFunction) {
       barra: barra,
       gastronomico: gastronomico,
       // Si las entidades tienen precios, usarlos como montos por defecto
-      montoDj: req.body.sanitizedInput.montoDj || (dj as any).precio || 0,
-      montoSalon:
-        req.body.sanitizedInput.montoSalon || (salon as any).precio || 0,
-      montoBarra:
-        req.body.sanitizedInput.montoBarra || (barra as any).precio || 0,
-      montoGastro:
-        req.body.sanitizedInput.montoGastro ||
-        (gastronomico as any).precio ||
-        0,
+      montoDj: dj.montoDj,
+      montoSalon: salon.montoS,
+      montoBarra: barra.montoB,
+      montoGastro: gastronomico.montoG,
+      montoTotal: (dj.montoDj + salon.montoS + barra.montoB + gastronomico.montoG)
     };
 
     const solicitud = en.create(Solicitud, solicitudData);

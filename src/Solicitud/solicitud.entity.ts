@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Property, Rel } from '@mikro-orm/core';
+import { Entity, ManyToOne, Property, Rel, DateTimeType } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 import { Cliente } from '../Cliente/cliente.entity.js';
 import { Dj } from '../Dj/dj.entity.js';
@@ -25,4 +25,22 @@ export class Solicitud extends BaseEntity {
 
   @Property({ nullable: false })
   estado !: string;
+
+  @Property({ type: DateTimeType })
+  fechaSolicitud = new Date();
+
+  @Property()
+  montoDj !: number;
+
+  @Property()
+  montoSalon !: number;
+
+  @Property()
+  montoBarra !: number;
+
+  @Property()
+  montoGastro!: number;
+
+  @Property()
+  montoTotal !: number;
 }
