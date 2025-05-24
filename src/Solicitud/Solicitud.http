@@ -10,12 +10,17 @@ POST http://localhost:3000/api/solicitud
 Content-Type: application/json
 
 {
-   "cliente": 1,
-   "dj": 1,
-   "barra": 1,
-   "gastronomico": 1,
-   "salon": 1,
-   "estado": "pendiente" 
+    "cliente": 1,
+    "dj": 1,
+    "salon": 1,
+    "gastronomico": 1,
+    "barra": 1,
+    "fechaSolicitud": "21/05/2025",
+    "estado": "activa",
+    "montoDj": 50000,
+    "montoSalon": 80000,
+    "montoBarra": 30000,
+    "montoGastro": 45000
 }
 
 ###ID
