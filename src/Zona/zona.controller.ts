@@ -6,11 +6,7 @@ const en = orm.em;
 
 function sanitizedZonaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    nombre: req.body.nombre,
-    dj: req.body.dj,
-    salon: req.body.salon,
-    barra: req.body.barra,
-    gastronomico: req.body.gastronomico,
+    nombre: req.body.nombre
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -25,7 +21,7 @@ function sanitizedZonaInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const Zonas = await en.find(Zona, {});
+    const Zonas = await en.find(Zona, {}, {populate: ['dj', 'salon', 'barra', 'gastro']});
     res
       .status(200)
       .json({ message: 'todas las zonas encontradas', data: Zonas });

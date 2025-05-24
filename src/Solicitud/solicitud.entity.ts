@@ -8,36 +8,21 @@ import { Gastro } from '../Gastronomico/gastronomico.entity.js';
 
 @Entity()
 export class Solicitud extends BaseEntity {
-  @Property({ nullable: false, unique: true })
-  montoDj!: number;
-
-  @Property({ nullable: false, unique: true })
-  montoSalon!: number;
-
-  @Property({ nullable: false, unique: true })
-  montoBarra!: number;
-
-  @Property({ nullable: false, unique: true })
-  montoGastro!: number;
-
   @ManyToOne(() => Cliente, { nullable: false })
-  cliente!: Rel<Cliente>;
+  cliente !: Rel<Cliente>;
 
   @ManyToOne(() => Dj, { nullable: false })
-  dj!: Rel<Dj>;
+  dj !: Rel<Dj>;
 
   @ManyToOne(() => Salon, { nullable: false })
-  salon!: Rel<Salon>;
+  salon !: Rel<Salon>;
 
   @ManyToOne(() => Barra, { nullable: false })
-  barra!: Rel<Barra>;
+  barra !: Rel<Barra>;
 
   @ManyToOne(() => Gastro, { nullable: false })
-  gastronomico!: Rel<Gastro>;
+  gastronomico !: Rel<Gastro>;
 
   @Property({ nullable: false })
-  fechaSolicitud!: Date;
-
-  @Property({ nullable: false })
-  estado!: string;
+  estado !: string;
 }

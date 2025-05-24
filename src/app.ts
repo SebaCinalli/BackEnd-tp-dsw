@@ -22,13 +22,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // API Routes
+app.use('/api/zona', ZonaRouter);
 app.use('/api/dj', DjRouter);
 app.use('/api/cliente', ClienteRouter);
 app.use('/api/barra', BarraRouter);
 app.use('/api/gastronomico', GastroRouter);
 app.use('/api/salon', SalonRouter);
 app.use('/api/solicitud', SolicitudRouter);
-app.use('/api/zona', ZonaRouter);
 
 // 404 handler - should be AFTER all other routes
 app.use((_, res: Response) => {

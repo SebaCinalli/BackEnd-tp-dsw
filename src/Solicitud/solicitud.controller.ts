@@ -2,26 +2,24 @@ import { Solicitud } from './solicitud.entity.js';
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
 
+
 const en = orm.em;
+en.getRepository(Solicitud);
 
 function sanitizedSolicitudInput(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
+
   req.body.sanitizedInput = {
-    montoDj: req.body.montoDj,
-    montoSalon: req.body.montoSalon,
-    montosolicitud: req.body.montosolicitud,
-    montoGastro: req.body.montoGastro,
-    barra: req.body.barra,
+    cliente: req.body.cliente,
     dj: req.body.dj,
     salon: req.body.salon,
+    barra: req.body.barra,
     gastronomico: req.body.gastronomico,
-    cliente: req.body.cliente,
-    fechaSolicitud: req.body.fechaSolicitud,
     estado: req.body.estado
-  };
+  }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -31,7 +29,7 @@ function sanitizedSolicitudInput(
   next();
 }
 
-en.getRepository(Solicitud);
+
 
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
