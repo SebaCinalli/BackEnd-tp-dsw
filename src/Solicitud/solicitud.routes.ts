@@ -14,10 +14,8 @@ SolicitudRouter.get('/', findAll);
 
 SolicitudRouter.get('/:id', findById);
 
-SolicitudRouter.post('/', add);
+SolicitudRouter.post('/', sanitizedSolicitudInput, add);
 
-SolicitudRouter.post('/', sanitizedSolicitudInput,add);
+SolicitudRouter.put('/:id', sanitizedSolicitudInput, modify);
 
-SolicitudRouter.put('/:id', sanitizedSolicitudInput, modify)
-
-SolicitudRouter.delete('/:id', remove)
+SolicitudRouter.delete('/:id', remove);
