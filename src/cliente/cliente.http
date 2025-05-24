@@ -37,7 +37,7 @@ Content-Type: application/json
 
 ### Obtener un cliente por ID
 
-GET http://localhost:3000/api/cliente/1
+GET http://localhost:3000/api/cliente/{{id}}
 
 
 ### ID A BORRAR
@@ -48,7 +48,7 @@ PUT http://localhost:3000/api/cliente/{{id}}
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
+  "nombre": "Juannnnn",
   "apellido": "Pérez Actualizado",
   "email": "juan.perez.actualizado@ejemplo.com"
 }

@@ -11,7 +11,7 @@ Content-Type: application/json
   "estado": "Disponible",
   "montoDj": 123,
   "foto": "algo.jpg",
-  "solicitud": 1  // Añadido - ID de la solicitud existente
+  "zona": 1
 }
 
 ### Crear un nuevo Dj
@@ -24,7 +24,7 @@ Content-Type: application/json
   "estado": "Ocupado",
   "montoDj": 1234,
   "foto": "algoo.jpg",
-  "solicitud": 1  // Añadido - ID de la solicitud existente
+  "zona": 1
 }
 
 ### ID

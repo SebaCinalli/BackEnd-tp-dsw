@@ -1,5 +1,5 @@
  // dj.entity.js
-import { Entity, Property, OneToMany, Collection, Cascade } from '@mikro-orm/core';
+import { Entity, Property, OneToMany, Collection, ManyToOne, Rel, Cascade } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.js';
 import { Solicitud } from '../Solicitud/solicitud.entity.js';
 import { Zona } from '../Zona/zona.entity.js';
@@ -21,6 +21,6 @@ export class Dj extends BaseEntity {
   @OneToMany(() => Solicitud, solicitud => solicitud.dj, {cascade: [Cascade.ALL]})
   solicitud = new Collection<Solicitud>(this)
 
-  @OneToMany(() => Zona, zona => zona.dj, {cascade: [Cascade.ALL]})
-  zona = new Collection<Zona>(this)
+  @ManyToOne(() => Zona, { nullable: false })
+  zona!: Rel<Zona>;
 }

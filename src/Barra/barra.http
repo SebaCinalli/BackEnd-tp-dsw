@@ -9,17 +9,25 @@ POST http://localhost:3000/api/barra
 Content-Type: application/json
 
 {
-
+  "nombreB": "Barra B",
+  "tipoBebida": "cerveza",
+  "montoB": 1234,
+  "foto": "algoo.jpg",
+  "zona": 1
 }
 
-### Crear una nuevo barra
+### POST una barra
 # @name createBarraClass2
 
 POST http://localhost:3000/api/barra
 Content-Type: application/json
 
 {
-
+  "nombreB": "Barraaaa B",
+  "tipoBebida": "cervezaa",
+  "montoB": 12345,
+  "foto": "algooo.jpg",
+  "zona": 1
 }
 
 ### ID
@@ -29,17 +37,13 @@ Content-Type: application/json
 
 GET http://localhost:3000/api/barra/{{id}}
 
-
-### ID A BORRAR
-@idToDelete = {{createBarraClass2.response.body.data.id}}
-
 ### Actualizar una barra existente
 PUT http://localhost:3000/api/barra/{{id}}
 Content-Type: application/json
 
 {
-
+  "nombreB": "Barra actualizada"
 }
 
 ### Eliminar una barra
-DELETE http://localhost:3000/api/barra/{{idToDelete}}
+DELETE http://localhost:3000/api/barra/{{id}}

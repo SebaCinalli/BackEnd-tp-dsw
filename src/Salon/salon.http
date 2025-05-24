@@ -6,12 +6,12 @@ POST http://localhost:3000/api/salon
 Content-Type: application/json
 
 {
-  "nombreSalon": "Salon A",
+  "nombre": "Salon A",
   "estado": "Disponible",
-  "montoDj": 1234,
-    "capacidad": 100,
+  "montoS": 1234,
+  "capacidad": 100,
   "foto": "algo.jpg",
-  "solicitud": 1  // Añadido - ID de la solicitud existente
+  "zona": 1
 }
 ### Crear un nuevo salon
 # @name createSalonClass2
@@ -19,12 +19,12 @@ POST http://localhost:3000/api/salon
 Content-Type: application/json
 
 {
-  "nombreSalon": "Salon B",
+  "nombre": "Salon B",
   "estado": "Ocupado",
-  "montoDj": 1234,
+  "montoS": 1234,
   "foto": "algoo.jpg",
   "capacidad": 100,
-  "solicitud": 1  // Añadido - ID de la solicitud existente
+  "zona": 1
 }
 ### ID
 @id = {{createSalonClass.response.body.data.id}}
@@ -37,10 +37,10 @@ PUT http://localhost:3000/api/salon/{{id}}
 Content-Type: application/json
 
 {
-  "nombreSalon": "Salon A Actualizado",
+  "nombre": "Salon A Actualizado",
   "estado": "Ocupado",
   "montoDj": 1234,
-  "capacidad": 150
+  "capacidad": 150,
   "foto": "algo_actualizado.jpg"
 }
 ### Eliminar un salon

@@ -1,7 +1,7 @@
 // index.js or app.js
 import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
-import { ClienteRouter } from './cliente/cliente.routes.js';
+import { ClienteRouter } from './Cliente/cliente.routes.js';
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
 import { BarraRouter } from './Barra/barra.routes.js';
@@ -25,7 +25,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/dj', DjRouter);
 app.use('/api/cliente', ClienteRouter);
 app.use('/api/barra', BarraRouter);
-app.use('/api/gastro', GastroRouter);
+app.use('/api/gastronomico', GastroRouter);
 app.use('/api/salon', SalonRouter);
 app.use('/api/solicitud', SolicitudRouter);
 app.use('/api/zona', ZonaRouter);
