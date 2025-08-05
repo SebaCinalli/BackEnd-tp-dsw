@@ -1,22 +1,27 @@
-
 import {Request, Response, NextFunction} from 'express';
 import { Cliente } from './cliente.entity.js';
 import { orm } from '../shared/db/orm.js';
+import bcrypt from 'bcrypt';
+import { createToken } from '../shared/jwt.js';
+import jwt from 'jsonwebtoken';
+import {User} from '../types/User.js';
 
 const en = orm.em
 
 en.getRepository(Cliente)
 
-function sanitizeClienteInput(
+async function sanitizeClienteInput(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     req.body.sanitizedInput = {
       nombre: req.body.nombre,
       apellido: req.body.apellido,
       email: req.body.email,
-      password: req.body.password,
+      password: hashedPassword,
       telefono: req.body.telefono,
       nombreUsuario: req.body.nombreUsuario,
       solicitud: req.body.solicitud
@@ -44,6 +49,7 @@ async function findAll(req:Request, res: Response) {
     }
 }
 
+//borrar o lo vamos a usar?
 async function findById(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
@@ -51,6 +57,60 @@ async function findById(req:Request, res: Response) {
         res.status(200).json({message: 'finded Cliente', data: cliente})
     }
     catch(error: any){
+        res.status(500).json({message: error.message})
+    }
+}
+
+async function verifyAndGetProfile(req: Request, res: Response): Promise<void> {
+    try {
+        
+        if (!req.user?.id || isNaN(req.user.id)) {
+            res.status(401).json({ message: 'Token inválido - ID no válido' });
+            return;
+        }
+        
+        const cliente = await en.findOneOrFail(Cliente, req.user.id);
+        res.status(200).json({ 
+            message: 'Token válido', 
+            user: {
+                id: cliente.id,
+                email: cliente.email,
+                username: cliente.nombreUsuario,
+                nombre: cliente.nombre,
+                apellido: cliente.apellido
+            }
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+async function verifyUser(req:Request, res: Response){
+    try{
+        const mail = req.body.email
+        const password = req.body.password
+        if(!mail || !password){
+            res.status(400).json({message: "Email y contraseña son requeridos"})
+        }
+        const cliente = await en.findOne(Cliente, {email: mail})
+        if(!cliente){
+            res.status(404).json({message: "Cliente no encontrado"})
+        }else{
+            const isPasswordValid = await bcrypt.compare(password, cliente.password)
+            if(!isPasswordValid){
+                res.status(400).json({message: "Contraseña incorrecta"})
+            }
+            const token = await createToken({id: cliente.id, email: cliente.email, username: cliente.nombreUsuario})
+            res.cookie("token", token, {httpOnly:true})
+            res.status(200).json({message: "Cliente found", 
+                email: cliente.email, 
+                username: cliente.nombreUsuario,
+                id: cliente.id, 
+                nombre: cliente.nombre, 
+                apellido: cliente.apellido})
+        }
+    }catch(error: any){
         res.status(500).json({message: error.message})
     }
 }
@@ -91,5 +151,14 @@ async function remove(req:Request, res: Response) {
     }
 }
 
+async function logout(req:Request, res:Response){
+    res.cookie("token", "",{
+        expires: new Date(0)
+    })
+    res.status(200).json({ message: 'Logout exitoso' })
+}
 
-export {sanitizeClienteInput, findAll, findById, add, modify, remove};
+
+
+
+export {sanitizeClienteInput, findAll, findById, add, modify, remove, verifyUser, logout, verifyAndGetProfile};

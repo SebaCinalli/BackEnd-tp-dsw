@@ -10,11 +10,21 @@ import { DjRouter } from './Dj/dj.routes.js';
 import { GastroRouter } from './Gastronomico/gastronomico.routes.js';
 import { SalonRouter } from './Salon/salon.routes.js';
 import { ZonaRouter } from './Zona/zona.routes.js';
+import cors from "cors"
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+dotenv.config({ path: './src/.env' });
+
 
 const app = express();
 const PORT = 3000;
 
+app.use(cors({
+  origin: "http://localhost:5173", // o el puerto de tu frontend
+  credentials: true,
+}));
 app.use(express.json()); // Middleware para parsear JSON
+app.use(cookieParser()); // Middleware para parsear cookies
 
 // Create MikroORM RequestContext for each request
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -40,6 +50,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).send({ error: 'Error del servidor', message: err.message });
 });
+
+app.use(cors())
 
 async function startServer() {
   try {
