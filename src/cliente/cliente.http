@@ -56,7 +56,8 @@ Content-Type: application/json
 {
   "nombre": "Juannnnn",
   "apellido": "Pérez Actualizado",
-  "email": "juan.perez.actualizado@ejemplo.com"
+  "email": "juan.perez.actualizado@ejemplo.com",
+  "img": "imagen_actualizada.jpg"
 }
 
 ### Eliminar un cliente

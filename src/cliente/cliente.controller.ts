@@ -3,41 +3,14 @@ import { Cliente } from './cliente.entity.js';
 import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcrypt';
 import { createToken } from '../shared/jwt.js';
-import jwt from 'jsonwebtoken';
-import {User} from '../types/User.js';
+
 
 const en = orm.em
 
 en.getRepository(Cliente)
 
-async function sanitizeClienteInput(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-    req.body.sanitizedInput = {
-      nombre: req.body.nombre,
-      apellido: req.body.apellido,
-      email: req.body.email,
-      password: hashedPassword,
-      telefono: req.body.telefono,
-      nombreUsuario: req.body.nombreUsuario,
-      solicitud: req.body.solicitud
-      
-    }
-    //more checks here
-  
-    Object.keys(req.body.sanitizedInput).forEach((key) => {
-      if (req.body.sanitizedInput[key] === undefined) {
-        delete req.body.sanitizedInput[key]
-      }
-    })
-    next()
-  }
-  
 
+//GET ALL
 
 async function findAll(req:Request, res: Response) {
     try{
@@ -49,7 +22,11 @@ async function findAll(req:Request, res: Response) {
     }
 }
 
-//borrar o lo vamos a usar?
+
+
+
+//GET BY ID
+
 async function findById(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
@@ -60,6 +37,10 @@ async function findById(req:Request, res: Response) {
         res.status(500).json({message: error.message})
     }
 }
+
+
+
+//VALIDAR SI ESTA LOGUEADO Y OBTENER SU PERFIL
 
 async function verifyAndGetProfile(req: Request, res: Response): Promise<void> {
     try {
@@ -77,7 +58,8 @@ async function verifyAndGetProfile(req: Request, res: Response): Promise<void> {
                 email: cliente.email,
                 username: cliente.nombreUsuario,
                 nombre: cliente.nombre,
-                apellido: cliente.apellido
+                apellido: cliente.apellido,
+                rol: cliente.rol
             }
         });
     } catch (error: any) {
@@ -85,6 +67,8 @@ async function verifyAndGetProfile(req: Request, res: Response): Promise<void> {
     }
 }
 
+
+//VALIDAR USUARIO EN EL LOGIN Y GENERAR TOKEN
 
 async function verifyUser(req:Request, res: Response){
     try{
@@ -101,19 +85,40 @@ async function verifyUser(req:Request, res: Response){
             if(!isPasswordValid){
                 res.status(400).json({message: "Contraseña incorrecta"})
             }
-            const token = await createToken({id: cliente.id, email: cliente.email, username: cliente.nombreUsuario})
+            const token = await createToken(
+                {
+                id: cliente.id, 
+                email: cliente.email, 
+                username: cliente.nombreUsuario, 
+                rol: cliente.rol, 
+                nombre: cliente.nombre, 
+                apellido: cliente.apellido,
+                img: cliente.img
+                }
+            )
+            
             res.cookie("token", token, {httpOnly:true})
             res.status(200).json({message: "Cliente found", 
                 email: cliente.email, 
                 username: cliente.nombreUsuario,
                 id: cliente.id, 
                 nombre: cliente.nombre, 
-                apellido: cliente.apellido})
+                apellido: cliente.apellido,
+                img: cliente.img,
+                rol: cliente.rol
+            })
         }
     }catch(error: any){
         res.status(500).json({message: error.message})
     }
 }
+
+
+
+
+
+
+//AÑADIR USUARIO
 
 async function add(req:Request, res: Response) {
     try{
@@ -125,6 +130,12 @@ async function add(req:Request, res: Response) {
         res.status(500).json({message: error.message})
     }
 }
+
+
+
+
+
+//MODIFICAR USUARIO
 
 async function modify(req:Request, res: Response) {
     try{
@@ -139,6 +150,13 @@ async function modify(req:Request, res: Response) {
     }
 }
 
+
+
+
+
+
+//BORRAR USUARIO
+
 async function remove(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
@@ -151,6 +169,11 @@ async function remove(req:Request, res: Response) {
     }
 }
 
+
+
+
+//LOGOUT
+
 async function logout(req:Request, res:Response){
     res.cookie("token", "",{
         expires: new Date(0)
@@ -160,5 +183,4 @@ async function logout(req:Request, res:Response){
 
 
 
-
-export {sanitizeClienteInput, findAll, findById, add, modify, remove, verifyUser, logout, verifyAndGetProfile};
+export {findAll, findById, add, modify, remove, verifyUser, logout, verifyAndGetProfile};
