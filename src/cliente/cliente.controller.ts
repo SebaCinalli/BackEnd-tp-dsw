@@ -1,38 +1,16 @@
-
 import {Request, Response, NextFunction} from 'express';
 import { Cliente } from './cliente.entity.js';
 import { orm } from '../shared/db/orm.js';
+import bcrypt from 'bcrypt';
+import { createToken } from '../shared/jwt.js';
+
 
 const en = orm.em
 
 en.getRepository(Cliente)
 
-function sanitizeClienteInput(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    req.body.sanitizedInput = {
-      nombre: req.body.nombre,
-      apellido: req.body.apellido,
-      email: req.body.email,
-      password: req.body.password,
-      telefono: req.body.telefono,
-      nombreUsuario: req.body.nombreUsuario,
-      solicitud: req.body.solicitud
-      
-    }
-    //more checks here
-  
-    Object.keys(req.body.sanitizedInput).forEach((key) => {
-      if (req.body.sanitizedInput[key] === undefined) {
-        delete req.body.sanitizedInput[key]
-      }
-    })
-    next()
-  }
-  
 
+//GET ALL
 
 async function findAll(req:Request, res: Response) {
     try{
@@ -43,6 +21,11 @@ async function findAll(req:Request, res: Response) {
         res.status(500).json({message: error.message})
     }
 }
+
+
+
+
+//GET BY ID
 
 async function findById(req:Request, res: Response) {
     try{
@@ -55,6 +38,88 @@ async function findById(req:Request, res: Response) {
     }
 }
 
+
+
+//VALIDAR SI ESTA LOGUEADO Y OBTENER SU PERFIL
+
+async function verifyAndGetProfile(req: Request, res: Response): Promise<void> {
+    try {
+        
+        if (!req.user?.id || isNaN(req.user.id)) {
+            res.status(401).json({ message: 'Token inválido - ID no válido' });
+            return;
+        }
+        
+        const cliente = await en.findOneOrFail(Cliente, req.user.id);
+        res.status(200).json({ 
+            message: 'Token válido', 
+            user: {
+                id: cliente.id,
+                email: cliente.email,
+                username: cliente.nombreUsuario,
+                nombre: cliente.nombre,
+                apellido: cliente.apellido,
+                rol: cliente.rol
+            }
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+//VALIDAR USUARIO EN EL LOGIN Y GENERAR TOKEN
+
+async function verifyUser(req:Request, res: Response){
+    try{
+        const mail = req.body.email
+        const password = req.body.password
+        if(!mail || !password){
+            res.status(400).json({message: "Email y contraseña son requeridos"})
+        }
+        const cliente = await en.findOne(Cliente, {email: mail})
+        if(!cliente){
+            res.status(404).json({message: "Cliente no encontrado"})
+        }else{
+            const isPasswordValid = await bcrypt.compare(password, cliente.password)
+            if(!isPasswordValid){
+                res.status(400).json({message: "Contraseña incorrecta"})
+            }
+            const token = await createToken(
+                {
+                id: cliente.id, 
+                email: cliente.email, 
+                username: cliente.nombreUsuario, 
+                rol: cliente.rol, 
+                nombre: cliente.nombre, 
+                apellido: cliente.apellido,
+                img: cliente.img
+                }
+            )
+            
+            res.cookie("token", token, {httpOnly:true})
+            res.status(200).json({message: "Cliente found", 
+                email: cliente.email, 
+                username: cliente.nombreUsuario,
+                id: cliente.id, 
+                nombre: cliente.nombre, 
+                apellido: cliente.apellido,
+                img: cliente.img,
+                rol: cliente.rol
+            })
+        }
+    }catch(error: any){
+        res.status(500).json({message: error.message})
+    }
+}
+
+
+
+
+
+
+//AÑADIR USUARIO
+
 async function add(req:Request, res: Response) {
     try{
         const cliente = en.create(Cliente, req.body.sanitizedInput)
@@ -65,6 +130,12 @@ async function add(req:Request, res: Response) {
         res.status(500).json({message: error.message})
     }
 }
+
+
+
+
+
+//MODIFICAR USUARIO
 
 async function modify(req:Request, res: Response) {
     try{
@@ -79,6 +150,13 @@ async function modify(req:Request, res: Response) {
     }
 }
 
+
+
+
+
+
+//BORRAR USUARIO
+
 async function remove(req:Request, res: Response) {
     try{
         const id = Number.parseInt(req.params.id)
@@ -92,4 +170,17 @@ async function remove(req:Request, res: Response) {
 }
 
 
-export {sanitizeClienteInput, findAll, findById, add, modify, remove};
+
+
+//LOGOUT
+
+async function logout(req:Request, res:Response){
+    res.cookie("token", "",{
+        expires: new Date(0)
+    })
+    res.status(200).json({ message: 'Logout exitoso' })
+}
+
+
+
+export {findAll, findById, add, modify, remove, verifyUser, logout, verifyAndGetProfile};

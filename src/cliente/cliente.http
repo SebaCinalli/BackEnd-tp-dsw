@@ -27,18 +27,24 @@ Content-Type: application/json
   "nombre": "Juan",
   "apellido": "Pérez",
   "email": "juan.perez@ejemplo.com",
-  "password": "contraseña123",
+  "password": "Contraseña123",
   "telefono": "123456789",
   "nombreUsuario": "juanperez"
 }
 
 ### ID
-@id = {{createClienteClass.response.body.data.id}}
-
+@id = {{createClienteClass2.response.body.data.id}}
 ### Obtener un cliente por ID
-
 GET http://localhost:3000/api/cliente/{{id}}
 
+### Obtener un cliente por email y password
+POST http://localhost:3000/api/cliente/login
+Content-Type: application/json
+
+{
+  "email": "juan.perez@ejemplo.com",
+  "password": "Contraseña123"
+}
 
 ### ID A BORRAR
 @idToDelete = {{createClienteClass2.response.body.data.id}}
@@ -50,8 +56,20 @@ Content-Type: application/json
 {
   "nombre": "Juannnnn",
   "apellido": "Pérez Actualizado",
-  "email": "juan.perez.actualizado@ejemplo.com"
+  "email": "juan.perez.actualizado@ejemplo.com",
+  "img": "imagen_actualizada.jpg"
 }
 
 ### Eliminar un cliente
 DELETE http://localhost:3000/api/cliente/{{idToDelete}}
+
+
+
+###logout
+POST http://localhost:3000/api/cliente/logout
+Content-Type: application/json
+
+
+### verify and get Profile
+POST http://localhost:3000/api/cliente/verify
+Content-Type: application/json

@@ -16,16 +16,13 @@ Content-Type: application/json
     "gastronomico": 1,
     "barra": 1,
     "fechaSolicitud": "21/05/2025",
-    "estado": "activa",
-    "montoDj": 50000,
-    "montoSalon": 80000,
-    "montoBarra": 30000,
-    "montoGastro": 45000
+    "estado": "activa"
 }
 
-### GET ONE
+###ID
 @id = {{createSolicitudClass.response.body.data.id}}
 
+### GET ONE
 GET http://localhost:3000/api/solicitud/{{id}}
 
 ### PUT
