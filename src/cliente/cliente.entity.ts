@@ -27,9 +27,9 @@ export class Cliente extends BaseEntity {
   rol?: 'cliente' | 'administrador';
 
   @Property({ length: 255, nullable: true})
-    img?: string;
+  img?: string;
 
   @OneToMany(() => Solicitud, solicitud => solicitud.cliente, {cascade: [Cascade.ALL]})
-    solicitud = new Collection<Solicitud>(this)
+  solicitud = new Collection<Solicitud>(this)
   
 }

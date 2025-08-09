@@ -22,6 +22,6 @@ ClienteRouter.post('/verify', verifyToken, verifyAndGetProfile);
 ClienteRouter.post('/logout', logout)
 
 // Rutas que modifican datos necesitan sanitización
-ClienteRouter.post('/', sanitizeUserInput, add);
+ClienteRouter.post('/register', sanitizeUserInput, add);
 ClienteRouter.put('/:id', sanitizeUserInput, modify);
 ClienteRouter.delete('/:id', remove);
