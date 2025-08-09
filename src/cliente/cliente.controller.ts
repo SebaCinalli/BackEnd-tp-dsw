@@ -59,7 +59,8 @@ async function verifyAndGetProfile(req: Request, res: Response): Promise<void> {
                 username: cliente.nombreUsuario,
                 nombre: cliente.nombre,
                 apellido: cliente.apellido,
-                rol: cliente.rol
+                rol: cliente.rol,
+                img: cliente.img
             }
         });
     } catch (error: any) {
@@ -124,7 +125,7 @@ async function add(req:Request, res: Response) {
     try{
         const cliente = en.create(Cliente, req.body.sanitizedInput)
         await en.flush()
-        res.status(201).json({message: 'Cliente created succesfully', data: cliente})
+        res.status(200).json({message: 'Cliente created succesfully', data: cliente})
     }
     catch(error: any){
         res.status(500).json({message: error.message})

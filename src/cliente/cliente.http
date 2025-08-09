@@ -5,7 +5,7 @@ GET http://localhost:3000/api/cliente
 ### POST un cliente
 # @name createClienteClass
 
-POST http://localhost:3000/api/cliente
+POST http://localhost:3000/api/cliente/register
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 ### Crear un nuevo cliente
 # @name createClienteClass2
 
-POST http://localhost:3000/api/cliente
+POST http://localhost:3000/api/cliente/register
 Content-Type: application/json
 
 {
