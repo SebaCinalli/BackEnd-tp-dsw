@@ -1,7 +1,7 @@
 import { Solicitud } from './solicitud.entity.js';
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
-import { Cliente } from '../Cliente/cliente.entity.js';
+import { Cliente } from '../cliente/cliente.entity.js';
 import { Dj } from '../Dj/dj.entity.js';
 import { Salon } from '../Salon/salon.entity.js';
 import { Barra } from '../Barra/barra.entity.js';
