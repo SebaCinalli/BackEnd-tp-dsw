@@ -1,7 +1,7 @@
 // index.js or app.js
 import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
-import { ClienteRouter } from './cliente/cliente.routes.js';
+import { ClienteRouter } from './Cliente/cliente.routes.js';
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
 import { BarraRouter } from './Barra/barra.routes.js';
