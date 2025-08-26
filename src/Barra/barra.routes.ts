@@ -6,8 +6,8 @@ import { verifyAdmin } from '../middleware/verifyAdmin.js';
 export const BarraRouter = Router();
 
 // Rutas de consulta no necesitan sanitización
-BarraRouter.get('/', verifyToken,verifyAdmin,findAll);
-BarraRouter.get('/:id', verifyToken, verifyAdmin, findById);
+BarraRouter.get('/', verifyToken,findAll);
+BarraRouter.get('/:id', verifyToken, findById);
 
 // Rutas que modifican datos necesitan sanitización
 BarraRouter.post('/', verifyToken,sanitizedBarraInput, verifyAdmin, add);

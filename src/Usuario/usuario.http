@@ -43,8 +43,8 @@ POST http://localhost:3000/api/usuario/login
 Content-Type: application/json
 
 {
-  "email": "juan.perez@ejemplo.com",
-  "password": "Contraseña123"
+  "email": "admin@email.com",
+  "password": "Admin123"
 }
 
 ### ID A BORRAR
