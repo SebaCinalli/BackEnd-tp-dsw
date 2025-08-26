@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
-import { Cliente } from './cliente.entity.js';
+import { Usuario } from './usuario.entity.js';
 import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcrypt';
 import { createToken } from '../shared/jwt.js';
 
 const en = orm.em;
 
-en.getRepository(Cliente);
+en.getRepository(Usuario);
 
 //GET ALL
 
 async function findAll(req: Request, res: Response) {
   try {
-    const Clientes = await en.find(Cliente, {});
-    res.status(200).json({ message: 'finded all Clientes', data: Clientes });
+    const usuarios = await en.find(Usuario, {});
+    res.status(200).json({ message: 'finded all usuarios', data: usuarios });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -24,8 +24,8 @@ async function findAll(req: Request, res: Response) {
 async function findById(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cliente = await en.findOneOrFail(Cliente, id);
-    res.status(200).json({ message: 'finded Cliente', data: cliente });
+    const usuario = await en.findOneOrFail(Usuario, id);
+    res.status(200).json({ message: 'finded usuario', data: usuario });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -40,17 +40,17 @@ async function verifyAndGetProfile(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const cliente = await en.findOneOrFail(Cliente, req.user.id);
+    const usuario = await en.findOneOrFail(Usuario, req.user.id);
     res.status(200).json({
       message: 'Token válido',
       user: {
-        id: cliente.id,
-        email: cliente.email,
-        username: cliente.nombreUsuario,
-        nombre: cliente.nombre,
-        apellido: cliente.apellido,
-        rol: cliente.rol,
-        img: cliente.img,
+        id: usuario.id,
+        email: usuario.email,
+        username: usuario.nombreUsuario,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        rol: usuario.rol,
+        img: usuario.img,
       },
     });
   } catch (error: any) {
@@ -67,37 +67,35 @@ async function verifyUser(req: Request, res: Response) {
     if (!mail || !password) {
       res.status(400).json({ message: 'Email y contraseña son requeridos' });
     }
-    const cliente = await en.findOne(Cliente, { email: mail });
-    if (!cliente) {
-      res.status(404).json({ message: 'Cliente no encontrado' });
+    const usuario = await en.findOne(Usuario, { email: mail });
+    if (!usuario) {
+      res.status(404).json({ message: 'Usuario no encontrado' });
     } else {
-      const isPasswordValid = await bcrypt.compare(password, cliente.password);
+      const isPasswordValid = await bcrypt.compare(password, usuario.password);
       if (!isPasswordValid) {
         res.status(400).json({ message: 'Contraseña incorrecta' });
       }
       const token = await createToken({
-        id: cliente.id,
-        email: cliente.email,
-        username: cliente.nombreUsuario,
-        rol: cliente.rol,
-        nombre: cliente.nombre,
-        apellido: cliente.apellido,
-        img: cliente.img,
+        id: usuario.id,
+        email: usuario.email,
+        username: usuario.nombreUsuario,
+        rol: usuario.rol,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        img: usuario.img,
       });
 
       res.cookie('token', token, { httpOnly: true });
-      res
-        .status(200)
-        .json({
-          message: 'Cliente found',
-          email: cliente.email,
-          username: cliente.nombreUsuario,
-          id: cliente.id,
-          nombre: cliente.nombre,
-          apellido: cliente.apellido,
-          img: cliente.img,
-          rol: cliente.rol,
-        });
+      res.status(200).json({
+        message: 'Usuario found',
+        email: usuario.email,
+        username: usuario.nombreUsuario,
+        id: usuario.id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        img: usuario.img,
+        rol: usuario.rol,
+      });
     }
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -108,11 +106,11 @@ async function verifyUser(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const cliente = en.create(Cliente, req.body.sanitizedInput);
+    const usuario = en.create(Usuario, req.body.sanitizedInput);
     await en.flush();
     res
       .status(200)
-      .json({ message: 'Cliente created succesfully', data: cliente });
+      .json({ message: 'Usuario created succesfully', data: usuario });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -123,10 +121,10 @@ async function add(req: Request, res: Response) {
 async function modify(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cliente = await en.findOneOrFail(Cliente, id);
-    en.assign(cliente, req.body.sanitizedInput);
+    const usuario = await en.findOneOrFail(Usuario, id);
+    en.assign(usuario, req.body.sanitizedInput);
     await en.flush();
-    res.status(200).json({ message: 'Cliente updated', data: cliente });
+    res.status(200).json({ message: 'Usuario updated', data: usuario });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -137,9 +135,9 @@ async function modify(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const cliente = en.getReference(Cliente, id);
-    await en.removeAndFlush(cliente);
-    res.status(200).json({ message: 'Cliente borrado' });
+    const usuario = en.getReference(Usuario, id);
+    await en.removeAndFlush(usuario);
+    res.status(200).json({ message: 'Usuario borrado' });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

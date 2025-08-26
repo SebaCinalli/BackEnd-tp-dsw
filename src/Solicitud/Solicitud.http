@@ -10,7 +10,7 @@ POST http://localhost:3000/api/solicitud
 Content-Type: application/json
 
 {
-    "cliente": 1,
+    "usuario": 1,
     "dj": 1,
     "salon": 1,
     "gastronomico": 1,

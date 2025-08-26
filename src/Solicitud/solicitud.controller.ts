@@ -1,7 +1,7 @@
 import { Solicitud } from './solicitud.entity.js';
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
-import { Cliente } from '../Cliente/cliente.entity.js';
+import { Usuario } from '../Usuario/usuario.entity.js';
 import { Dj } from '../Dj/dj.entity.js';
 import { Salon } from '../Salon/salon.entity.js';
 import { Barra } from '../Barra/barra.entity.js';
@@ -27,7 +27,7 @@ function sanitizedSolicitudInput(
   }
 
   req.body.sanitizedInput = {
-    cliente: req.body.cliente,
+    usuario: req.body.usuario,
     dj: req.body.dj,
     salon: req.body.salon,
     gastronomico: req.body.gastronomico,
@@ -49,14 +49,12 @@ async function findAll(req: Request, res: Response, next: NextFunction) {
     const solicitudes = await en.find(
       Solicitud,
       {},
-      { populate: ['cliente', 'dj', 'salon', 'barra', 'gastronomico'] }
+      { populate: ['usuario', 'dj', 'salon', 'barra', 'gastronomico'] }
     );
-    res
-      .status(200)
-      .json({
-        message: 'todas las solicitudes encontradas',
-        data: solicitudes,
-      });
+    res.status(200).json({
+      message: 'todas las solicitudes encontradas',
+      data: solicitudes,
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -66,7 +64,7 @@ async function findById(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
     const solicitud = await en.findOneOrFail(Solicitud, id, {
-      populate: ['cliente', 'dj', 'salon', 'barra', 'gastronomico'],
+      populate: ['usuario', 'dj', 'salon', 'barra', 'gastronomico'],
     });
     res.status(200).json({ message: 'solicitud encontrada', data: solicitud });
   } catch (error: any) {
@@ -77,20 +75,23 @@ async function findById(req: Request, res: Response, next: NextFunction) {
 async function add(req: Request, res: Response, next: NextFunction) {
   try {
     // Obtener las entidades relacionadas para calcular montos
-    const cliente = await en.findOneOrFail(
-      Cliente,
-      req.body.sanitizedInput.cliente
+    const usuario = await en.findOneOrFail(
+      Usuario,
+      req.body.sanitizedInput.usuario
     );
     const dj = await en.findOneOrFail(Dj, req.body.sanitizedInput.dj);
     const salon = await en.findOneOrFail(Salon, req.body.sanitizedInput.salon);
     const barra = await en.findOneOrFail(Barra, req.body.sanitizedInput.barra);
-    const gastronomico = await en.findOneOrFail(Gastro, req.body.sanitizedInput.gastronomico);
+    const gastronomico = await en.findOneOrFail(
+      Gastro,
+      req.body.sanitizedInput.gastronomico
+    );
 
     // Si no se proporcionaron montos, usar los precios de las entidades
     // (asumiendo que las entidades tienen propiedades de precio)
     const solicitudData = {
       ...req.body.sanitizedInput,
-      cliente: cliente,
+      usuario: usuario,
       dj: dj,
       salon: salon,
       barra: barra,
@@ -100,7 +101,8 @@ async function add(req: Request, res: Response, next: NextFunction) {
       montoSalon: salon.montoS,
       montoBarra: barra.montoB,
       montoGastro: gastronomico.montoG,
-      montoTotal: (dj.montoDj + salon.montoS + barra.montoB + gastronomico.montoG)
+      montoTotal:
+        dj.montoDj + salon.montoS + barra.montoB + gastronomico.montoG,
     };
 
     const solicitud = en.create(Solicitud, solicitudData);

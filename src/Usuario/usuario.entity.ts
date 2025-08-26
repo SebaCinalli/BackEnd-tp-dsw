@@ -9,7 +9,7 @@ import { BaseEntity } from '../shared/db/baseEntity.js';
 import { Solicitud } from '../Solicitud/solicitud.entity.js';
 
 @Entity()
-export class Cliente extends BaseEntity {
+export class Usuario extends BaseEntity {
   @Property({ length: 255, unique: true, nullable: false })
   nombre!: string;
 
@@ -33,13 +33,13 @@ export class Cliente extends BaseEntity {
   })
   nombreUsuario!: string;
 
-  @Property({ default: 'cliente' })
-  rol?: 'cliente' | 'administrador';
+  @Property({ default: 'usuario' })
+  rol?: 'usuario' | 'administrador';
 
   @Property({ length: 255, nullable: true })
   img?: string;
 
-  @OneToMany(() => Solicitud, (solicitud) => solicitud.cliente, {
+  @OneToMany(() => Solicitud, (solicitud) => solicitud.usuario, {
     cascade: [Cascade.ALL],
   })
   solicitud = new Collection<Solicitud>(this);
