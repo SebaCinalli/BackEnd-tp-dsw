@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "tsc-watch --onSuccess \"node dist/app.js\""
+    "dev": "tsc-watch --onSuccess \"node dist/app.js\"",
+    "seed": "tsc && node dist/shared/db/runSeeder.js"
   },
   "type": "module",
   "keywords": [],
