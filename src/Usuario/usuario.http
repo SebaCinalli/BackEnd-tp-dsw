@@ -1,0 +1,76 @@
+### Obtener todos los usuarios
+GET http://localhost:3000/api/usuario
+
+
+### POST un usuario
+# @name createUsuarioClass
+
+POST http://localhost:3000/api/usuario/register
+Content-Type: application/json
+
+{
+  "nombre": "Juancito",
+  "apellido": "Pérez 2",
+  "email": "juan.perez@ejedsadasmplo.com",
+  "password": "contrasedsadsaña123",
+  "telefono": "123432432456789",
+  "nombreUsuario": "juanperez2"
+}
+
+### Crear un nuevo usuario
+# @name createUsuarioClass2
+
+POST http://localhost:3000/api/usuario/register
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "juan.perez@ejemplo.com",
+  "password": "Contraseña123",
+  "telefono": "123456789",
+  "nombreUsuario": "juanperez",
+  "rol": "administrador"
+}
+
+### ID
+@id = {{createUsuarioClass2.response.body.data.id}}
+### Obtener un usuario por ID
+GET http://localhost:3000/api/usuario/{{id}}
+
+### Obtener un usuario por email y password
+POST http://localhost:3000/api/usuario/login
+Content-Type: application/json
+
+{
+  "email": "juan.perez@ejemplo.com",
+  "password": "Contraseña123"
+}
+
+### ID A BORRAR
+@idToDelete = {{createUsuarioClass2.response.body.data.id}}
+
+### Actualizar un usuario existente
+PUT http://localhost:3000/api/usuario/{{id}}
+Content-Type: application/json
+
+{
+  "nombre": "Juannnnn",
+  "apellido": "Pérez Actualizado",
+  "email": "juan.perez.actualizado@ejemplo.com",
+  "img": "imagen_actualizada.jpg"
+}
+
+### Eliminar un usuario
+DELETE http://localhost:3000/api/usuario/{{idToDelete}}
+
+
+
+###logout
+POST http://localhost:3000/api/usuario/logout
+Content-Type: application/json
+
+
+### verify and get Profile
+POST http://localhost:3000/api/usuario/verify
+Content-Type: application/json
