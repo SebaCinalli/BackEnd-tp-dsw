@@ -42,10 +42,10 @@ export async function seedDatabase(em: EntityManager) {
 
 async function createZonas(em: EntityManager): Promise<Zona[]> {
   const zonas = [
-    { nombre: 'Zona VIP' },
-    { nombre: 'Zona Terraza' },
-    { nombre: 'Zona Principal' },
-    { nombre: 'Zona Exterior' },
+    { nombre: 'Centro' },
+    { nombre: 'España Y Hospitales' },
+    { nombre: 'Norte' },
+    { nombre: 'Pichincha' },
   ];
 
   const zonasEntities = zonas.map((zona) => {
