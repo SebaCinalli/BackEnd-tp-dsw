@@ -1,8 +1,9 @@
 import { Salon } from './salon.entity.js';
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
+import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
 
-const en = orm.em;
+const en = orm.em.fork();
 
 function sanitizedSalonInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -71,7 +72,15 @@ async function modify(req: Request, res: Response, next: NextFunction) {
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
-    const salon = en.getReference(Salon, id);
+    // Primero obtener el salon para acceder a su imagen
+    const salon = await en.findOneOrFail(Salon, id);
+
+    // Eliminar la imagen si existe
+    if (salon.foto) {
+      deleteImageFile('salones', salon.foto);
+    }
+
+    // Luego eliminar el salon de la base de datos
     await en.removeAndFlush(salon);
     res.status(200).json({ message: 'salon borrado' });
   } catch (error: any) {
@@ -79,4 +88,49 @@ async function remove(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export { sanitizedSalonInput, findAll, findById, add, modify, remove };
+//SUBIR IMAGEN
+
+async function uploadImage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = Number.parseInt(req.params.id);
+    const salon = await en.findOneOrFail(Salon, id);
+
+    if (!req.file) {
+      res.status(400).json({ message: 'No se subió ningún archivo' });
+      return;
+    }
+
+    // Eliminar imagen anterior si existe
+    const oldImage = salon.foto;
+
+    // Actualizar la entidad con el nombre del archivo
+    salon.foto = req.file.filename;
+    await en.flush();
+
+    // Eliminar la imagen anterior después de guardar la nueva
+    if (oldImage) {
+      replaceImageFile('salones', oldImage, req.file.filename);
+    }
+
+    res.status(200).json({
+      message: 'Imagen subida exitosamente',
+      data: {
+        id: salon.id,
+        foto: salon.foto,
+        imageUrl: `http://localhost:3000/uploads/salones/${salon.foto}`,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export {
+  sanitizedSalonInput,
+  findAll,
+  findById,
+  add,
+  modify,
+  remove,
+  uploadImage,
+};

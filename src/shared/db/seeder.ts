@@ -61,7 +61,7 @@ async function createZonas(em: EntityManager): Promise<Zona[]> {
 }
 
 async function createUsuarios(em: EntityManager): Promise<void> {
-  // Hash de las contraseñas (ahora con al menos una mayúscula)
+  // Hash de las contraseñas 
   const adminPasswordHash = await bcrypt.hash('Admin123', 10);
   const clientePasswordHash = await bcrypt.hash('Cliente123', 10);
 
@@ -98,21 +98,21 @@ async function createBarras(em: EntityManager, zonas: Zona[]): Promise<void> {
       tipoBebida: 'Cócteles Premium',
       montoB: 15000,
       foto: 'barra-premium.jpg',
-      zona: zonas[0], // Zona VIP
+      zona: zonas[0], //  
     },
     {
       nombreB: 'Barra Central',
       tipoBebida: 'Bebidas Variadas',
       montoB: 8000,
       foto: 'barra-central.jpg',
-      zona: zonas[2], // Zona Principal
+      zona: zonas[2], //   
     },
     {
       nombreB: 'Barra Terraza',
       tipoBebida: 'Tragos Frescos',
       montoB: 10000,
       foto: 'barra-terraza.jpg',
-      zona: zonas[1], // Zona Terraza
+      zona: zonas[1], //   
     },
   ];
 
@@ -134,21 +134,21 @@ async function createDjs(em: EntityManager, zonas: Zona[]): Promise<void> {
       estado: 'Disponible',
       montoDj: 50000,
       foto: 'dj-electro.jpg',
-      zona: zonas[0], // Zona VIP
+      zona: zonas[0], //  
     },
     {
       nombreArtistico: 'DJ Beats',
       estado: 'Disponible',
       montoDj: 35000,
       foto: 'dj-beats.jpg',
-      zona: zonas[2], // Zona Principal
+      zona: zonas[2], //   
     },
     {
       nombreArtistico: 'DJ Sunset',
       estado: 'Disponible',
       montoDj: 40000,
       foto: 'dj-sunset.jpg',
-      zona: zonas[1], // Zona Terraza
+      zona: zonas[1], //   
     },
   ];
 
@@ -173,21 +173,21 @@ async function createGastronomicos(
       tipoComida: 'Internacional',
       montoG: 25000,
       foto: 'cocina-gourmet.jpg',
-      zona: zonas[0], // Zona VIP
+      zona: zonas[0], //  
     },
     {
       nombreG: 'Snack Bar',
       tipoComida: 'Comida Rápida',
       montoG: 12000,
       foto: 'snack-bar.jpg',
-      zona: zonas[2], // Zona Principal
+      zona: zonas[2], //   
     },
     {
       nombreG: 'Parrilla Terraza',
       tipoComida: 'Parrilla',
       montoG: 18000,
       foto: 'parrilla-terraza.jpg',
-      zona: zonas[1], // Zona Terraza
+      zona: zonas[1], //   
     },
   ];
 
@@ -210,7 +210,7 @@ async function createSalones(em: EntityManager, zonas: Zona[]): Promise<void> {
       montoS: 100000,
       capacidad: 50,
       foto: 'salon-vip.jpg',
-      zona: zonas[0], // Zona VIP
+      zona: zonas[0], //  
     },
     {
       nombre: 'Salón Principal',
@@ -218,7 +218,7 @@ async function createSalones(em: EntityManager, zonas: Zona[]): Promise<void> {
       montoS: 60000,
       capacidad: 150,
       foto: 'salon-principal.jpg',
-      zona: zonas[2], // Zona Principal
+      zona: zonas[2], //   
     },
     {
       nombre: 'Salón Terraza',
@@ -226,7 +226,7 @@ async function createSalones(em: EntityManager, zonas: Zona[]): Promise<void> {
       montoS: 80000,
       capacidad: 80,
       foto: 'salon-terraza.jpg',
-      zona: zonas[1], // Zona Terraza
+      zona: zonas[1], //   
     },
   ];
 

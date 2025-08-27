@@ -1,8 +1,9 @@
 import { Gastro } from './gastronomico.entity.js';
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
+import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
 
-const en = orm.em;
+const en = orm.em.fork();
 
 function sanitizedGastronomicoInput(
   req: Request,
@@ -31,12 +32,10 @@ en.getRepository(Gastro);
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
     const gastronom = await en.find(Gastro, {});
-    res
-      .status(200)
-      .json({
-        message: 'Todas los gastronomicos encontrados',
-        data: gastronom,
-      });
+    res.status(200).json({
+      message: 'Todas los gastronomicos encontrados',
+      data: gastronom,
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -77,7 +76,15 @@ async function modify(req: Request, res: Response, next: NextFunction) {
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
-    const gastro = en.getReference(Gastro, id);
+    // Primero obtener el gastronomico para acceder a su imagen
+    const gastro = await en.findOneOrFail(Gastro, id);
+
+    // Eliminar la imagen si existe
+    if (gastro.foto) {
+      deleteImageFile('gastronomicos', gastro.foto);
+    }
+
+    // Luego eliminar el gastronomico de la base de datos
     await en.removeAndFlush(gastro);
     res.status(200).json({ message: 'gastronomico borrado' });
   } catch (error: any) {
@@ -85,4 +92,49 @@ async function remove(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export { sanitizedGastronomicoInput, findAll, findById, add, modify, remove };
+//SUBIR IMAGEN
+
+async function uploadImage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = Number.parseInt(req.params.id);
+    const gastro = await en.findOneOrFail(Gastro, id);
+
+    if (!req.file) {
+      res.status(400).json({ message: 'No se subió ningún archivo' });
+      return;
+    }
+
+    // Eliminar imagen anterior si existe
+    const oldImage = gastro.foto;
+
+    // Actualizar la entidad con el nombre del archivo
+    gastro.foto = req.file.filename;
+    await en.flush();
+
+    // Eliminar la imagen anterior después de guardar la nueva
+    if (oldImage) {
+      replaceImageFile('gastronomicos', oldImage, req.file.filename);
+    }
+
+    res.status(200).json({
+      message: 'Imagen subida exitosamente',
+      data: {
+        id: gastro.id,
+        foto: gastro.foto,
+        imageUrl: `http://localhost:3000/uploads/gastronomicos/${gastro.foto}`,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export {
+  sanitizedGastronomicoInput,
+  findAll,
+  findById,
+  add,
+  modify,
+  remove,
+  uploadImage,
+};
