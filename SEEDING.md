@@ -21,10 +21,10 @@ Este proyecto ahora incluye un sistema de seeding que automáticamente poblará 
 
 ### Zonas (4 instancias)
 
-1. Zona VIP
-2. Zona Terraza
-3. Zona Principal
-4. Zona Exterior
+1. Centro
+2. España Y Hospitales
+3. Norte
+4. Pichincha
 
 ### Barras (3 instancias)
 
