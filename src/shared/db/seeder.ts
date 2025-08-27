@@ -61,7 +61,7 @@ async function createZonas(em: EntityManager): Promise<Zona[]> {
 }
 
 async function createUsuarios(em: EntityManager): Promise<void> {
-  // Hash de las contraseñas 
+  // Hash de las contraseñas
   const adminPasswordHash = await bcrypt.hash('Admin123', 10);
   const clientePasswordHash = await bcrypt.hash('Cliente123', 10);
 
@@ -94,25 +94,25 @@ async function createUsuarios(em: EntityManager): Promise<void> {
 async function createBarras(em: EntityManager, zonas: Zona[]): Promise<void> {
   const barras = [
     {
-      nombreB: 'Barra Premium',
-      tipoBebida: 'Cócteles Premium',
+      nombreB: 'Barra Normal',
+      tipoBebida: 'No Alcoholicas',
       montoB: 15000,
-      foto: 'barra-premium.jpg',
-      zona: zonas[0], //  
+      foto: 'imagen-1756336149721-257458667.jpg',
+      zona: zonas[0], //
     },
     {
-      nombreB: 'Barra Central',
+      nombreB: 'Barra Algo',
       tipoBebida: 'Bebidas Variadas',
       montoB: 8000,
-      foto: 'barra-central.jpg',
-      zona: zonas[2], //   
+      foto: 'imagen-1756337633351-742182203.jpg',
+      zona: zonas[2], //
     },
     {
-      nombreB: 'Barra Terraza',
-      tipoBebida: 'Tragos Frescos',
+      nombreB: 'Barra Cheta',
+      tipoBebida: 'Mixtas',
       montoB: 10000,
-      foto: 'barra-terraza.jpg',
-      zona: zonas[1], //   
+      foto: 'imagen-1756337656956-814533062.jpg',
+      zona: zonas[1], //
     },
   ];
 
@@ -130,25 +130,25 @@ async function createBarras(em: EntityManager, zonas: Zona[]): Promise<void> {
 async function createDjs(em: EntityManager, zonas: Zona[]): Promise<void> {
   const djs = [
     {
-      nombreArtistico: 'DJ Electro',
+      nombreArtistico: 'DJ Tecno',
       estado: 'Disponible',
       montoDj: 50000,
-      foto: 'dj-electro.jpg',
-      zona: zonas[0], //  
+      foto: 'imagen-1756338014830-68979177.jpg',
+      zona: zonas[0], //
     },
     {
-      nombreArtistico: 'DJ Beats',
+      nombreArtistico: 'DJ Gordo',
       estado: 'Disponible',
       montoDj: 35000,
-      foto: 'dj-beats.jpg',
-      zona: zonas[2], //   
+      foto: 'imagen-1756338054791-310753685.jpg',
+      zona: zonas[2], //
     },
     {
-      nombreArtistico: 'DJ Sunset',
+      nombreArtistico: 'DJ Cheto',
       estado: 'Disponible',
       montoDj: 40000,
-      foto: 'dj-sunset.jpg',
-      zona: zonas[1], //   
+      foto: 'imagen-1756338172280-8884904.jpg',
+      zona: zonas[1], //
     },
   ];
 
@@ -172,22 +172,22 @@ async function createGastronomicos(
       nombreG: 'Cocina Gourmet',
       tipoComida: 'Internacional',
       montoG: 25000,
-      foto: 'cocina-gourmet.jpg',
-      zona: zonas[0], //  
+      foto: 'imagen-1756337829726-897326136.jpg',
+      zona: zonas[0], //
     },
     {
-      nombreG: 'Snack Bar',
-      tipoComida: 'Comida Rápida',
+      nombreG: 'Algun Nombre',
+      tipoComida: 'Mariscos',
       montoG: 12000,
-      foto: 'snack-bar.jpg',
-      zona: zonas[2], //   
+      foto: 'imagen-1756337886426-549531815.jpg',
+      zona: zonas[2], //
     },
     {
-      nombreG: 'Parrilla Terraza',
+      nombreG: 'Parrilla',
       tipoComida: 'Parrilla',
       montoG: 18000,
-      foto: 'parrilla-terraza.jpg',
-      zona: zonas[1], //   
+      foto: 'imagen-1756337966037-5436715.jpg',
+      zona: zonas[1], //
     },
   ];
 
@@ -210,7 +210,7 @@ async function createSalones(em: EntityManager, zonas: Zona[]): Promise<void> {
       montoS: 100000,
       capacidad: 50,
       foto: 'salon-vip.jpg',
-      zona: zonas[0], //  
+      zona: zonas[0], //
     },
     {
       nombre: 'Salón Principal',
@@ -218,7 +218,7 @@ async function createSalones(em: EntityManager, zonas: Zona[]): Promise<void> {
       montoS: 60000,
       capacidad: 150,
       foto: 'salon-principal.jpg',
-      zona: zonas[2], //   
+      zona: zonas[2], //
     },
     {
       nombre: 'Salón Terraza',
@@ -226,7 +226,7 @@ async function createSalones(em: EntityManager, zonas: Zona[]): Promise<void> {
       montoS: 80000,
       capacidad: 80,
       foto: 'salon-terraza.jpg',
-      zona: zonas[1], //   
+      zona: zonas[1], //
     },
   ];
 
