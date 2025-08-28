@@ -16,7 +16,7 @@ GastroRouter.get('/', findAll);
 
 GastroRouter.get('/:id', findById);
 
-GastroRouter.post('/', sanitizedGastronomicoInput, add);
+GastroRouter.post('/', uploadGastronomico, sanitizedGastronomicoInput, add);
 
 GastroRouter.put('/:id', sanitizedGastronomicoInput, modify);
 

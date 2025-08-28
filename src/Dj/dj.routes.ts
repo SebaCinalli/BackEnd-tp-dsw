@@ -16,7 +16,7 @@ DjRouter.get('/', findAll);
 
 DjRouter.get('/:id', findById);
 
-DjRouter.post('/', sanitizedDjInput, add);
+DjRouter.post('/', uploadDj, sanitizedDjInput, add);
 
 DjRouter.put('/:id', sanitizedDjInput, modify);
 

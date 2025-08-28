@@ -49,9 +49,26 @@ async function findById(req: Request, res: Response, next: NextFunction) {
 
 async function add(req: Request, res: Response, next: NextFunction) {
   try {
+    // Si se subió una imagen, agregar el nombre del archivo
+    if (req.file) {
+      req.body.sanitizedInput.foto = req.file.filename;
+    }
+
     const dj = em.create(Dj, req.body.sanitizedInput);
     await em.flush();
-    res.status(201).json({ message: 'dj creado', data: dj });
+
+    // Incluir URL de la imagen en la respuesta si existe
+    const response: any = {
+      message: 'dj creado',
+      data: {
+        ...dj,
+        imageUrl: dj.foto
+          ? `http://localhost:3000/uploads/djs/${dj.foto}`
+          : null,
+      },
+    };
+
+    res.status(201).json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

@@ -16,7 +16,7 @@ SalonRouter.get('/', findAll);
 
 SalonRouter.get('/:id', findById);
 
-SalonRouter.post('/', sanitizedSalonInput, add);
+SalonRouter.post('/', uploadSalon, sanitizedSalonInput, add);
 
 SalonRouter.put('/:id', sanitizedSalonInput, modify);
 
