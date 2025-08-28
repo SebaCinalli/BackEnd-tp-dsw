@@ -3,8 +3,9 @@ import { Usuario } from './usuario.entity.js';
 import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcrypt';
 import { createToken } from '../shared/jwt.js';
+import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
 
-const en = orm.em;
+const en = orm.em.fork();
 
 en.getRepository(Usuario);
 
@@ -135,7 +136,15 @@ async function modify(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
-    const usuario = en.getReference(Usuario, id);
+    // Primero obtener el usuario para acceder a su imagen
+    const usuario = await en.findOneOrFail(Usuario, id);
+
+    // Eliminar la imagen si existe
+    if (usuario.img) {
+      deleteImageFile('usuarios', usuario.img);
+    }
+
+    // Luego eliminar el usuario de la base de datos
     await en.removeAndFlush(usuario);
     res.status(200).json({ message: 'Usuario borrado' });
   } catch (error: any) {
@@ -152,6 +161,43 @@ async function logout(req: Request, res: Response) {
   res.status(200).json({ message: 'Logout exitoso' });
 }
 
+//SUBIR IMAGEN
+
+async function uploadImage(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id);
+    const usuario = await en.findOneOrFail(Usuario, id);
+
+    if (!req.file) {
+      res.status(400).json({ message: 'No se subió ningún archivo' });
+      return;
+    }
+
+    // Eliminar imagen anterior si existe
+    const oldImage = usuario.img;
+
+    // Actualizar la entidad con el nombre del archivo
+    usuario.img = req.file.filename;
+    await en.flush();
+
+    // Eliminar la imagen anterior después de guardar la nueva
+    if (oldImage) {
+      replaceImageFile('usuarios', oldImage, req.file.filename);
+    }
+
+    res.status(200).json({
+      message: 'Imagen subida exitosamente',
+      data: {
+        id: usuario.id,
+        img: usuario.img,
+        imageUrl: `http://localhost:3000/uploads/usuarios/${usuario.img}`,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 export {
   findAll,
   findById,
@@ -161,4 +207,5 @@ export {
   verifyUser,
   logout,
   verifyAndGetProfile,
+  uploadImage,
 };

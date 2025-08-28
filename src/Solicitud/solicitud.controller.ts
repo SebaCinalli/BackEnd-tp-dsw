@@ -7,7 +7,7 @@ import { Salon } from '../Salon/salon.entity.js';
 import { Barra } from '../Barra/barra.entity.js';
 import { Gastro } from '../Gastronomico/gastronomico.entity.js';
 
-const en = orm.em;
+const en = orm.em.fork();
 en.getRepository(Solicitud);
 
 function sanitizedSolicitudInput(

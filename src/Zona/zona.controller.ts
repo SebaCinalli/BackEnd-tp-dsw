@@ -2,11 +2,11 @@ import { Zona } from './zona.entity.js';
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
 
-const en = orm.em;
+const en = orm.em.fork();
 
 function sanitizedZonaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    nombre: req.body.nombre
+    nombre: req.body.nombre,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -21,7 +21,11 @@ function sanitizedZonaInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const Zonas = await en.find(Zona, {}, {populate: ['dj', 'salon', 'barra', 'gastro']});
+    const Zonas = await en.find(
+      Zona,
+      {},
+      { populate: ['dj', 'salon', 'barra', 'gastro'] }
+    );
     res
       .status(200)
       .json({ message: 'todas las zonas encontradas', data: Zonas });

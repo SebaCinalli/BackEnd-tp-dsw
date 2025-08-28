@@ -8,9 +8,11 @@ import {
   remove,
   logout,
   verifyAndGetProfile,
+  uploadImage,
 } from './usuario.controller.js';
 import { verifyToken } from '../middleware/verifyToken.js';
 import { sanitizeUserInput } from '../middleware/sanitizateUser.js';
+import { uploadUsuario } from '../middleware/upload.js';
 
 export const UsuarioRouter = Router();
 
@@ -25,3 +27,11 @@ UsuarioRouter.post('/logout', logout);
 UsuarioRouter.post('/register', sanitizeUserInput, add);
 UsuarioRouter.put('/:id', sanitizeUserInput, modify);
 UsuarioRouter.delete('/:id', remove);
+
+// Ruta para subir imagen
+UsuarioRouter.post(
+  '/:id/upload-image',
+  verifyToken,
+  uploadUsuario,
+  uploadImage
+);

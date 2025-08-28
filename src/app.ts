@@ -27,6 +27,9 @@ app.use(
 app.use(express.json()); // Middleware para parsear JSON
 app.use(cookieParser()); // Middleware para parsear cookies
 
+// Servir archivos estáticos (imágenes)
+app.use('/uploads', express.static('public/uploads'));
+
 // Create MikroORM RequestContext for each request
 app.use((req: Request, res: Response, next: NextFunction) => {
   RequestContext.create(orm.em, next);
