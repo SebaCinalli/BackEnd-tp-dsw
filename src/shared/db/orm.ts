@@ -22,10 +22,10 @@ export const orm = await MikroORM.init({
 
 export const syncSchema = async () => {
   const generator = orm.getSchemaGenerator();
-  await generator.dropSchema(); //si tira algun error sobre el id, descomentar esto y borrar el updateSchema, ejecutar y volver a comentar esto
-  await generator.createSchema(); // y poner el update schema
-  // await generator.updateSchema()
+  //await generator.dropSchema(); //si tira algun error sobre el id, descomentar esto y borrar el updateSchema, ejecutar y volver a comentar esto
+  //await generator.createSchema(); // y poner el update schema
+  await generator.updateSchema()
 
   // Poblar la base de datos con datos iniciales
-  await seedDatabase(orm.em.fork());
+  //await seedDatabase(orm.em.fork());
 };
