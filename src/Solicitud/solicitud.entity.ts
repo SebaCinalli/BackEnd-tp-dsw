@@ -17,17 +17,17 @@ export class Solicitud extends BaseEntity {
   @ManyToOne(() => Usuario, { nullable: false })
   usuario!: Rel<Usuario>;
 
-  @ManyToOne(() => Dj, { nullable: false })
-  dj!: Rel<Dj>;
+  @ManyToOne(() => Dj, { nullable: true })
+  dj?: Rel<Dj>;
 
-  @ManyToOne(() => Salon, { nullable: false })
-  salon!: Rel<Salon>;
+  @ManyToOne(() => Salon, { nullable: true })
+  salon?: Rel<Salon>;
 
-  @ManyToOne(() => Barra, { nullable: false })
-  barra!: Rel<Barra>;
+  @ManyToOne(() => Barra, { nullable: true })
+  barra?: Rel<Barra>;
 
-  @ManyToOne(() => Gastro, { nullable: false })
-  gastronomico!: Rel<Gastro>;
+  @ManyToOne(() => Gastro, { nullable: true })
+  gastronomico?: Rel<Gastro>;
 
   @Property({ nullable: false })
   estado!: string;
@@ -35,17 +35,17 @@ export class Solicitud extends BaseEntity {
   @Property({ type: DateTimeType })
   fechaSolicitud = new Date();
 
-  @Property()
-  montoDj!: number;
+  @Property({ nullable: true })
+  montoDj?: number;
 
-  @Property()
-  montoSalon!: number;
+  @Property({ nullable: true })
+  montoSalon?: number;
 
-  @Property()
-  montoBarra!: number;
+  @Property({ nullable: true })
+  montoBarra?: number;
 
-  @Property()
-  montoGastro!: number;
+  @Property({ nullable: true })
+  montoGastro?: number;
 
   @Property()
   montoTotal!: number;

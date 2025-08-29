@@ -27,14 +27,24 @@ function sanitizedSolicitudInput(
   }
 
   req.body.sanitizedInput = {
-    usuario: req.body.usuario,
-    dj: req.body.dj,
-    salon: req.body.salon,
-    gastronomico: req.body.gastronomico,
-    barra: req.body.barra,
+    usuario: req.body.usuario, // Usuario siempre requerido
     fechaSolicitud: fechaSolicitud,
     estado: req.body.estado,
   };
+
+  // Agregar servicios opcionales solo si están presentes
+  if (req.body.dj) {
+    req.body.sanitizedInput.dj = req.body.dj;
+  }
+  if (req.body.salon) {
+    req.body.sanitizedInput.salon = req.body.salon;
+  }
+  if (req.body.gastronomico) {
+    req.body.sanitizedInput.gastronomico = req.body.gastronomico;
+  }
+  if (req.body.barra) {
+    req.body.sanitizedInput.barra = req.body.barra;
+  }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -74,36 +84,62 @@ async function findById(req: Request, res: Response, next: NextFunction) {
 
 async function add(req: Request, res: Response, next: NextFunction) {
   try {
-    // Obtener las entidades relacionadas para calcular montos
+    // Obtener el usuario (siempre requerido)
     const usuario = await en.findOneOrFail(
       Usuario,
       req.body.sanitizedInput.usuario
     );
-    const dj = await en.findOneOrFail(Dj, req.body.sanitizedInput.dj);
-    const salon = await en.findOneOrFail(Salon, req.body.sanitizedInput.salon);
-    const barra = await en.findOneOrFail(Barra, req.body.sanitizedInput.barra);
-    const gastronomico = await en.findOneOrFail(
-      Gastro,
-      req.body.sanitizedInput.gastronomico
-    );
 
-    // Si no se proporcionaron montos, usar los precios de las entidades
-    // (asumiendo que las entidades tienen propiedades de precio)
-    const solicitudData = {
-      ...req.body.sanitizedInput,
+    const solicitudData: any = {
       usuario: usuario,
-      dj: dj,
-      salon: salon,
-      barra: barra,
-      gastronomico: gastronomico,
-      // Si las entidades tienen precios, usarlos como montos por defecto
-      montoDj: dj.montoDj,
-      montoSalon: salon.montoS,
-      montoBarra: barra.montoB,
-      montoGastro: gastronomico.montoG,
-      montoTotal:
-        dj.montoDj + salon.montoS + barra.montoB + gastronomico.montoG,
+      estado: req.body.sanitizedInput.estado || 'pendiente',
+      fechaSolicitud: req.body.sanitizedInput.fechaSolicitud || new Date(),
     };
+
+    let montoTotal = 0;
+
+    // Procesar DJ si se proporciona
+    if (req.body.sanitizedInput.dj) {
+      const dj = await en.findOneOrFail(Dj, req.body.sanitizedInput.dj);
+      solicitudData.dj = dj;
+      solicitudData.montoDj = dj.montoDj;
+      montoTotal += dj.montoDj;
+    }
+
+    // Procesar Salon si se proporciona
+    if (req.body.sanitizedInput.salon) {
+      const salon = await en.findOneOrFail(
+        Salon,
+        req.body.sanitizedInput.salon
+      );
+      solicitudData.salon = salon;
+      solicitudData.montoSalon = salon.montoS;
+      montoTotal += salon.montoS;
+    }
+
+    // Procesar Barra si se proporciona
+    if (req.body.sanitizedInput.barra) {
+      const barra = await en.findOneOrFail(
+        Barra,
+        req.body.sanitizedInput.barra
+      );
+      solicitudData.barra = barra;
+      solicitudData.montoBarra = barra.montoB;
+      montoTotal += barra.montoB;
+    }
+
+    // Procesar Gastronomico si se proporciona
+    if (req.body.sanitizedInput.gastronomico) {
+      const gastronomico = await en.findOneOrFail(
+        Gastro,
+        req.body.sanitizedInput.gastronomico
+      );
+      solicitudData.gastronomico = gastronomico;
+      solicitudData.montoGastro = gastronomico.montoG;
+      montoTotal += gastronomico.montoG;
+    }
+
+    solicitudData.montoTotal = montoTotal;
 
     const solicitud = en.create(Solicitud, solicitudData);
     await en.flush();
