@@ -10,7 +10,7 @@ import {
 } from './barra.controller.js';
 import { verifyToken } from '../middleware/verifyToken.js';
 import { verifyAdmin } from '../middleware/verifyAdmin.js';
-import { uploadBarra } from '../middleware/upload.js';
+import { uploadBarra, uploadBarraOptional } from '../middleware/upload.js';
 
 export const BarraRouter = Router();
 
@@ -22,7 +22,7 @@ BarraRouter.get('/:id', verifyToken, findById);
 BarraRouter.post(
   '/',
   verifyToken,
-  uploadBarra,
+  uploadBarraOptional,
   sanitizedBarraInput,
   verifyAdmin,
   add

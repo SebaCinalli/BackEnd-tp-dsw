@@ -8,19 +8,34 @@ import {
   remove,
   uploadImage,
 } from './dj.controller.js';
-import { uploadDj } from '../middleware/upload.js';
+import { uploadDj, uploadDjOptional } from '../middleware/upload.js';
+import { verifyToken } from '../middleware/verifyToken.js';
+import { verifyAdmin } from '../middleware/verifyAdmin.js';
 
 export const DjRouter = Router();
 
-DjRouter.get('/', findAll);
+DjRouter.get('/', verifyToken, findAll);
 
-DjRouter.get('/:id', findById);
+DjRouter.get('/:id', verifyToken, findById);
 
-DjRouter.post('/', uploadDj, sanitizedDjInput, add);
+DjRouter.post(
+  '/',
+  verifyToken,
+  uploadDjOptional,
+  sanitizedDjInput,
+  verifyAdmin,
+  add
+);
 
-DjRouter.put('/:id', sanitizedDjInput, modify);
+DjRouter.put('/:id', verifyToken, sanitizedDjInput, verifyAdmin, modify);
 
-DjRouter.delete('/:id', remove);
+DjRouter.delete('/:id', verifyToken, verifyAdmin, remove);
 
 // Ruta para subir imagen
-DjRouter.post('/:id/upload-image', uploadDj, uploadImage);
+DjRouter.post(
+  '/:id/upload-image',
+  verifyToken,
+  verifyAdmin,
+  uploadDj,
+  uploadImage
+);

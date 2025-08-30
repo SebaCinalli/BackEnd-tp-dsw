@@ -1,6 +1,6 @@
 import multer from 'multer';
 import path from 'path';
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 // Configuración de almacenamiento
 const storage = multer.diskStorage({
@@ -68,3 +68,87 @@ export const uploadDj = upload.single('imagen');
 export const uploadBarra = upload.single('imagen');
 export const uploadSalon = upload.single('imagen');
 export const uploadGastronomico = upload.single('imagen');
+
+// Middleware opcionales para cada entidad (para creación sin imagen obligatoria)
+export const uploadUsuarioOptional = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  uploadUsuario(req, res, (err: any) => {
+    // Si hay un error de archivo inesperado, simplemente continúa sin error
+    // Esto permite crear sin imagen
+    if (err && err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return next();
+    }
+    // Para otros errores (formato inválido, tamaño, etc.), sí pasa el error
+    if (err) {
+      return next(err);
+    }
+    next();
+  });
+};
+
+export const uploadDjOptional = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  uploadDj(req, res, (err: any) => {
+    if (err && err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return next();
+    }
+    if (err) {
+      return next(err);
+    }
+    next();
+  });
+};
+
+export const uploadBarraOptional = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  uploadBarra(req, res, (err: any) => {
+    if (err && err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return next();
+    }
+    if (err) {
+      return next(err);
+    }
+    next();
+  });
+};
+
+export const uploadSalonOptional = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  uploadSalon(req, res, (err: any) => {
+    if (err && err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return next();
+    }
+    if (err) {
+      return next(err);
+    }
+    next();
+  });
+};
+
+export const uploadGastronomicoOptional = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  uploadGastronomico(req, res, (err: any) => {
+    if (err && err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return next();
+    }
+    if (err) {
+      return next(err);
+    }
+    next();
+  });
+};

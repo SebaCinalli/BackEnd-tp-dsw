@@ -8,19 +8,43 @@ import {
   remove,
   uploadImage,
 } from './gastronomico.controller.js';
-import { uploadGastronomico } from '../middleware/upload.js';
+import {
+  uploadGastronomico,
+  uploadGastronomicoOptional,
+} from '../middleware/upload.js';
+import { verifyToken } from '../middleware/verifyToken.js';
+import { verifyAdmin } from '../middleware/verifyAdmin.js';
 
 export const GastroRouter = Router();
 
-GastroRouter.get('/', findAll);
+GastroRouter.get('/', verifyToken, findAll);
 
-GastroRouter.get('/:id', findById);
+GastroRouter.get('/:id', verifyToken, findById);
 
-GastroRouter.post('/', uploadGastronomico, sanitizedGastronomicoInput, add);
+GastroRouter.post(
+  '/',
+  verifyToken,
+  uploadGastronomicoOptional,
+  sanitizedGastronomicoInput,
+  verifyAdmin,
+  add
+);
 
-GastroRouter.put('/:id', sanitizedGastronomicoInput, modify);
+GastroRouter.put(
+  '/:id',
+  verifyToken,
+  sanitizedGastronomicoInput,
+  verifyAdmin,
+  modify
+);
 
-GastroRouter.delete('/:id', remove);
+GastroRouter.delete('/:id', verifyToken, verifyAdmin, remove);
 
 // Ruta para subir imagen
-GastroRouter.post('/:id/upload-image', uploadGastronomico, uploadImage);
+GastroRouter.post(
+  '/:id/upload-image',
+  verifyToken,
+  verifyAdmin,
+  uploadGastronomico,
+  uploadImage
+);
