@@ -26,31 +26,31 @@ function sanitizedSolicitudInput(
     );
   }
 
-  req.body.sanitizedInput = {
-    usuario: req.body.usuario, // Usuario siempre requerido
-    fechaSolicitud: fechaSolicitud,
-    estado: req.body.estado,
-  };
+  req.body.sanitizedInput = {};
 
-  // Agregar servicios opcionales solo si están presentes
-  if (req.body.dj) {
+  // Solo agregar campos que están presentes en el body
+  if (req.body.usuario !== undefined) {
+    req.body.sanitizedInput.usuario = req.body.usuario;
+  }
+  if (fechaSolicitud !== undefined) {
+    req.body.sanitizedInput.fechaSolicitud = fechaSolicitud;
+  }
+  if (req.body.estado !== undefined) {
+    req.body.sanitizedInput.estado = req.body.estado;
+  }
+  if (req.body.dj !== undefined) {
     req.body.sanitizedInput.dj = req.body.dj;
   }
-  if (req.body.salon) {
+  if (req.body.salon !== undefined) {
     req.body.sanitizedInput.salon = req.body.salon;
   }
-  if (req.body.gastronomico) {
+  if (req.body.gastronomico !== undefined) {
     req.body.sanitizedInput.gastronomico = req.body.gastronomico;
   }
-  if (req.body.barra) {
+  if (req.body.barra !== undefined) {
     req.body.sanitizedInput.barra = req.body.barra;
   }
 
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key];
-    }
-  });
   next();
 }
 
@@ -152,8 +152,92 @@ async function add(req: Request, res: Response, next: NextFunction) {
 async function modify(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
-    const solicitud = await en.findOneOrFail(Solicitud, id);
-    en.assign(solicitud, req.body.sanitizedInput);
+    const solicitud = await en.findOneOrFail(Solicitud, id, {
+      populate: ['usuario', 'dj', 'salon', 'barra', 'gastronomico'],
+    });
+
+    // Solo actualizar los campos que se proporcionan en el body
+    const input = req.body.sanitizedInput;
+
+    // Actualizar datos básicos
+    if (input.estado !== undefined) {
+      solicitud.estado = input.estado;
+    }
+    if (input.fechaSolicitud !== undefined) {
+      solicitud.fechaSolicitud = input.fechaSolicitud;
+    }
+
+    // Actualizar usuario si se proporciona
+    if (input.usuario !== undefined) {
+      const usuario = await en.findOneOrFail(Usuario, input.usuario);
+      solicitud.usuario = usuario;
+    }
+
+    // Actualizar servicios y recalcular montos
+    let needsRecalculation = false;
+
+    // Procesar DJ
+    if (input.dj !== undefined) {
+      needsRecalculation = true;
+      if (input.dj === null) {
+        solicitud.dj = undefined;
+        solicitud.montoDj = undefined;
+      } else {
+        const dj = await en.findOneOrFail(Dj, input.dj);
+        solicitud.dj = dj;
+        solicitud.montoDj = dj.montoDj;
+      }
+    }
+
+    // Procesar Salon
+    if (input.salon !== undefined) {
+      needsRecalculation = true;
+      if (input.salon === null) {
+        solicitud.salon = undefined;
+        solicitud.montoSalon = undefined;
+      } else {
+        const salon = await en.findOneOrFail(Salon, input.salon);
+        solicitud.salon = salon;
+        solicitud.montoSalon = salon.montoS;
+      }
+    }
+
+    // Procesar Barra
+    if (input.barra !== undefined) {
+      needsRecalculation = true;
+      if (input.barra === null) {
+        solicitud.barra = undefined;
+        solicitud.montoBarra = undefined;
+      } else {
+        const barra = await en.findOneOrFail(Barra, input.barra);
+        solicitud.barra = barra;
+        solicitud.montoBarra = barra.montoB;
+      }
+    }
+
+    // Procesar Gastronomico
+    if (input.gastronomico !== undefined) {
+      needsRecalculation = true;
+      if (input.gastronomico === null) {
+        solicitud.gastronomico = undefined;
+        solicitud.montoGastro = undefined;
+      } else {
+        const gastronomico = await en.findOneOrFail(Gastro, input.gastronomico);
+        solicitud.gastronomico = gastronomico;
+        solicitud.montoGastro = gastronomico.montoG;
+      }
+    }
+
+    // Recalcular monto total si es necesario
+    if (needsRecalculation) {
+      let montoTotal = 0;
+      if (solicitud.montoDj) montoTotal += solicitud.montoDj;
+      if (solicitud.montoSalon) montoTotal += solicitud.montoSalon;
+      if (solicitud.montoBarra) montoTotal += solicitud.montoBarra;
+      if (solicitud.montoGastro) montoTotal += solicitud.montoGastro;
+      solicitud.montoTotal = montoTotal;
+    }
+
     await en.flush();
     res.status(200).json({ message: 'solicitud modificada', data: solicitud });
   } catch (error: any) {
