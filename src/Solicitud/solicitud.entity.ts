@@ -35,6 +35,9 @@ export class Solicitud extends BaseEntity {
   @Property({ type: DateTimeType })
   fechaSolicitud = new Date();
 
+  @Property({ type: DateTimeType, nullable: false })
+  fechaEvento!: Date;
+
   @Property({ nullable: true })
   montoDj?: number;
 

@@ -14,7 +14,7 @@ function sanitizedSolicitudInput(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): void {
   // Convertir fecha del formato DD/MM/YYYY a Date
   let fechaSolicitud = req.body.fechaSolicitud;
   if (typeof fechaSolicitud === 'string') {
@@ -26,6 +26,13 @@ function sanitizedSolicitudInput(
     );
   }
 
+  // Convertir fecha del evento del formato DD/MM/YYYY a Date
+  let fechaEvento = req.body.fechaEvento;
+  if (typeof fechaEvento === 'string') {
+    const [day, month, year] = fechaEvento.split('/');
+    fechaEvento = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  }
+
   req.body.sanitizedInput = {};
 
   // Solo agregar campos que están presentes en el body
@@ -34,6 +41,9 @@ function sanitizedSolicitudInput(
   }
   if (fechaSolicitud !== undefined) {
     req.body.sanitizedInput.fechaSolicitud = fechaSolicitud;
+  }
+  if (fechaEvento !== undefined) {
+    req.body.sanitizedInput.fechaEvento = fechaEvento;
   }
   if (req.body.estado !== undefined) {
     req.body.sanitizedInput.estado = req.body.estado;
@@ -54,23 +64,76 @@ function sanitizedSolicitudInput(
   next();
 }
 
-async function findAll(req: Request, res: Response, next: NextFunction) {
+async function findAll(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
+    // Obtener la fecha del query parameter
+    const fecha = req.query.fecha as string;
+
+    if (!fecha) {
+      // Si no se proporciona fecha, devolver todas las solicitudes
+      const solicitudes = await en.find(
+        Solicitud,
+        {},
+        { populate: ['usuario', 'dj', 'salon', 'barra', 'gastronomico'] }
+      );
+      res.status(200).json({
+        message: 'todas las solicitudes encontradas',
+        data: solicitudes,
+      });
+      return;
+    }
+
+    // Convertir fecha del formato DD/MM/YYYY a Date
+    let fechaBusqueda: Date;
+    if (typeof fecha === 'string') {
+      const [day, month, year] = fecha.split('/');
+      fechaBusqueda = new Date(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day)
+      );
+    } else {
+      fechaBusqueda = new Date(fecha);
+    }
+
+    // Normalizar la fecha para buscar todo el día
+    const fechaInicio = new Date(fechaBusqueda);
+    fechaInicio.setHours(0, 0, 0, 0);
+
+    const fechaFin = new Date(fechaBusqueda);
+    fechaFin.setHours(23, 59, 59, 999);
+
+    // Buscar solicitudes que coincidan con la fecha del evento
     const solicitudes = await en.find(
       Solicitud,
-      {},
+      {
+        fechaEvento: {
+          $gte: fechaInicio,
+          $lte: fechaFin,
+        },
+      },
       { populate: ['usuario', 'dj', 'salon', 'barra', 'gastronomico'] }
     );
+
     res.status(200).json({
-      message: 'todas las solicitudes encontradas',
+      message: `solicitudes encontradas para la fecha ${fecha}`,
       data: solicitudes,
+      fechaConsultada: fecha,
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 }
 
-async function findById(req: Request, res: Response, next: NextFunction) {
+async function findById(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     const id = Number.parseInt(req.params.id);
     const solicitud = await en.findOneOrFail(Solicitud, id, {
@@ -82,7 +145,11 @@ async function findById(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function add(req: Request, res: Response, next: NextFunction) {
+async function add(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     // Obtener el usuario (siempre requerido)
     const usuario = await en.findOneOrFail(
@@ -90,10 +157,19 @@ async function add(req: Request, res: Response, next: NextFunction) {
       req.body.sanitizedInput.usuario
     );
 
+    // Validar que se proporcione la fecha del evento
+    if (!req.body.sanitizedInput.fechaEvento) {
+      res.status(400).json({
+        message: 'La fecha del evento es requerida',
+      });
+      return;
+    }
+
     const solicitudData: any = {
       usuario: usuario,
       estado: req.body.sanitizedInput.estado || 'pendiente',
       fechaSolicitud: req.body.sanitizedInput.fechaSolicitud || new Date(),
+      fechaEvento: req.body.sanitizedInput.fechaEvento,
     };
 
     let montoTotal = 0;
@@ -149,7 +225,11 @@ async function add(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function modify(req: Request, res: Response, next: NextFunction) {
+async function modify(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     const id = Number.parseInt(req.params.id);
     const solicitud = await en.findOneOrFail(Solicitud, id, {
@@ -165,6 +245,9 @@ async function modify(req: Request, res: Response, next: NextFunction) {
     }
     if (input.fechaSolicitud !== undefined) {
       solicitud.fechaSolicitud = input.fechaSolicitud;
+    }
+    if (input.fechaEvento !== undefined) {
+      solicitud.fechaEvento = input.fechaEvento;
     }
 
     // Actualizar usuario si se proporciona
@@ -245,7 +328,11 @@ async function modify(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function remove(req: Request, res: Response, next: NextFunction) {
+async function remove(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     const id = Number.parseInt(req.params.id);
     const solicitud = en.getReference(Solicitud, id);
