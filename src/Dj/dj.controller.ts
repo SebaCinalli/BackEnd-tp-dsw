@@ -16,6 +16,12 @@ function sanitizedDjInput(req: Request, res: Response, next: NextFunction) {
       zona: req.body.zona,
     };
 
+    if(req.body.sanitizedInput.zona === undefined){
+    res.status(403).json({message: 'no autorizado'})
+    return;
+  }
+
+
     Object.keys(req.body.sanitizedInput).forEach((key) => {
       if (req.body.sanitizedInput[key] === undefined) {
         delete req.body.sanitizedInput[key];
