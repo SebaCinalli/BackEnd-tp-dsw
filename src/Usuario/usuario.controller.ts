@@ -52,6 +52,9 @@ async function verifyAndGetProfile(req: Request, res: Response): Promise<void> {
         apellido: usuario.apellido,
         rol: usuario.rol,
         img: usuario.img,
+        imageUrl: usuario.img
+          ? `http://localhost:3000/uploads/usuarios/${usuario.img}`
+          : null,
       },
     });
   } catch (error: any) {
@@ -95,6 +98,9 @@ async function verifyUser(req: Request, res: Response) {
         nombre: usuario.nombre,
         apellido: usuario.apellido,
         img: usuario.img,
+        imageUrl: usuario.img
+          ? `http://localhost:3000/uploads/usuarios/${usuario.img}`
+          : null,
         rol: usuario.rol,
       });
     }
@@ -125,7 +131,24 @@ async function modify(req: Request, res: Response) {
     const usuario = await en.findOneOrFail(Usuario, id);
     en.assign(usuario, req.body.sanitizedInput);
     await en.flush();
-    res.status(200).json({ message: 'Usuario updated', data: usuario });
+
+    // Respuesta con datos completos del usuario actualizado
+    res.status(200).json({
+      message: 'Usuario updated',
+      data: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        email: usuario.email,
+        telefono: usuario.telefono,
+        nombreUsuario: usuario.nombreUsuario,
+        rol: usuario.rol,
+        img: usuario.img,
+        imageUrl: usuario.img
+          ? `http://localhost:3000/uploads/usuarios/${usuario.img}`
+          : null,
+      },
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
