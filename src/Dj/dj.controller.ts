@@ -2,6 +2,7 @@ import { Dj } from './dj.entity.js';
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
 import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
+import { obtenerServiciosReservados } from '../shared/reservaUtils.js';
 
 const em = orm.em.fork();
 
@@ -29,9 +30,37 @@ function sanitizedDjInput(req: Request, res: Response, next: NextFunction) {
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
     console.log('findAll llamado');
-    const djs = await em.find(Dj, {});
+
+    // Obtener la fecha del query parameter
+    const fecha = req.query.fecha as string;
+
+    let djs = await em.find(Dj, {});
     console.log('Found DJs:', djs);
-    res.status(200).json({ message: 'todos los dj encontrados', data: djs });
+
+    // Si se proporciona una fecha, filtrar los DJs reservados para esa fecha
+    if (fecha) {
+      try {
+        const djsReservados = await obtenerServiciosReservados(fecha, 'dj');
+        console.log('DJs reservados para fecha', fecha, ':', djsReservados);
+
+        // Filtrar los DJs que no están reservados para esa fecha
+        djs = djs.filter((dj) => !djsReservados.includes(dj.id));
+
+        res.status(200).json({
+          message: `DJs disponibles para la fecha ${fecha}`,
+          data: djs,
+          fechaConsultada: fecha,
+          djsReservados: djsReservados,
+        });
+      } catch (error) {
+        console.error('Error al filtrar DJs por fecha:', error);
+        res
+          .status(200)
+          .json({ message: 'todos los dj encontrados', data: djs });
+      }
+    } else {
+      res.status(200).json({ message: 'todos los dj encontrados', data: djs });
+    }
   } catch (error: any) {
     next(error);
   }

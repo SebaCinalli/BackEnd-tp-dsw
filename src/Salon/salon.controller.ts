@@ -2,6 +2,7 @@ import { Salon } from './salon.entity.js';
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
 import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
+import { obtenerServiciosReservados } from '../shared/reservaUtils.js';
 
 const en = orm.em.fork();
 
@@ -28,10 +29,47 @@ en.getRepository(Salon);
 
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
-    const salones = await en.find(Salon, {});
-    res
-      .status(200)
-      .json({ message: 'todos los salones encontrados', data: salones });
+    // Obtener la fecha del query parameter
+    const fecha = req.query.fecha as string;
+
+    let salones = await en.find(Salon, {});
+
+    // Si se proporciona una fecha, filtrar los salones reservados para esa fecha
+    if (fecha) {
+      try {
+        const salonesReservados = await obtenerServiciosReservados(
+          fecha,
+          'salon'
+        );
+        console.log(
+          'Salones reservados para fecha',
+          fecha,
+          ':',
+          salonesReservados
+        );
+
+        // Filtrar los salones que no están reservados para esa fecha
+        salones = salones.filter(
+          (salon) => !salonesReservados.includes(salon.id)
+        );
+
+        res.status(200).json({
+          message: `Salones disponibles para la fecha ${fecha}`,
+          data: salones,
+          fechaConsultada: fecha,
+          salonesReservados: salonesReservados,
+        });
+      } catch (error) {
+        console.error('Error al filtrar salones por fecha:', error);
+        res
+          .status(200)
+          .json({ message: 'todos los salones encontrados', data: salones });
+      }
+    } else {
+      res
+        .status(200)
+        .json({ message: 'todos los salones encontrados', data: salones });
+    }
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

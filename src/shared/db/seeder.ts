@@ -87,7 +87,19 @@ async function createUsuarios(em: EntityManager): Promise<void> {
   cliente.rol = 'usuario';
   cliente.img = 'cliente-avatar.jpg';
 
+  // Usuario Chiqui
+  const elChiqui = new Usuario();
+  elChiqui.nombre = 'Chiqui';
+  elChiqui.apellido = 'Tapia';
+  elChiqui.email = 'chiquitapia@email.com';
+  elChiqui.password = adminPasswordHash;
+  elChiqui.telefono = '658934678';
+  elChiqui.nombreUsuario = 'elchiqui';
+  elChiqui.rol = 'administrador';
+  elChiqui.img = 'imagen-1756753319138-828858984.jpeg';
+
   em.persist(admin);
+  em.persist(elChiqui);
   em.persist(cliente);
 }
 
