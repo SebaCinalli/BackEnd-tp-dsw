@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
 import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
 import { obtenerServiciosReservados } from '../shared/reservaUtils.js';
+import { Zona } from '../Zona/zona.entity.js';
 
 const en = orm.em.fork();
 
@@ -20,8 +21,8 @@ function sanitizedGastronomicoInput(
     zona: req.body.zona,
   };
 
-  if(req.body.sanitizedInput.zona === undefined){
-    res.status(403).json({message: 'no autorizado'})
+  if (req.body.sanitizedInput.zona === undefined) {
+    res.status(403).json({ message: 'no autorizado' });
     return;
   }
 
@@ -37,10 +38,17 @@ en.getRepository(Gastro);
 
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
-    // Obtener la fecha del query parameter
+    // Obtener la fecha y zona del query parameter
     const fecha = req.query.fecha as string;
+    const zonaId = req.query.zona as string;
 
-    let gastronom = await en.find(Gastro, {});
+    // Construir filtros para la consulta
+    const filters: any = {};
+    if (zonaId) {
+      filters.zona = Number.parseInt(zonaId);
+    }
+
+    let gastronom = await en.find(Gastro, filters, { populate: ['zona'] });
 
     // Si se proporciona una fecha, filtrar los servicios gastronómicos reservados para esa fecha
     if (fecha) {
@@ -62,9 +70,12 @@ async function findAll(req: Request, res: Response, next: NextFunction) {
         );
 
         res.status(200).json({
-          message: `Servicios gastronómicos disponibles para la fecha ${fecha}`,
+          message: `Servicios gastronómicos disponibles para la fecha ${fecha}${
+            zonaId ? ` en la zona ${zonaId}` : ''
+          }`,
           data: gastronom,
           fechaConsultada: fecha,
+          zonaFiltrada: zonaId || null,
           gastronomicosReservados: gastronomicosReservados,
         });
       } catch (error) {
@@ -72,20 +83,22 @@ async function findAll(req: Request, res: Response, next: NextFunction) {
           'Error al filtrar servicios gastronómicos por fecha:',
           error
         );
-        res
-          .status(200)
-          .json({
-            message: 'Todas los gastronomicos encontrados',
-            data: gastronom,
-          });
+        res.status(200).json({
+          message: `Todas los gastronomicos encontrados${
+            zonaId ? ` en la zona ${zonaId}` : ''
+          }`,
+          data: gastronom,
+          zonaFiltrada: zonaId || null,
+        });
       }
     } else {
-      res
-        .status(200)
-        .json({
-          message: 'Todas los gastronomicos encontrados',
-          data: gastronom,
-        });
+      res.status(200).json({
+        message: `Todas los gastronomicos encontrados${
+          zonaId ? ` en la zona ${zonaId}` : ''
+        }`,
+        data: gastronom,
+        zonaFiltrada: zonaId || null,
+      });
     }
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -107,6 +120,14 @@ async function add(req: Request, res: Response, next: NextFunction) {
     // Si se subió una imagen, agregar el nombre del archivo
     if (req.file) {
       req.body.sanitizedInput.foto = req.file.filename;
+    }
+
+    // Convertir ID de zona en referencia a la entidad Zona
+    if (req.body.sanitizedInput.zona) {
+      req.body.sanitizedInput.zona = en.getReference(
+        'Zona',
+        req.body.sanitizedInput.zona
+      );
     }
 
     const gastro = en.create(Gastro, req.body.sanitizedInput);
@@ -133,6 +154,15 @@ async function modify(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
     const gastro = await en.findOneOrFail(Gastro, id);
+
+    // Convertir ID de zona en referencia a la entidad Zona si se está actualizando
+    if (req.body.sanitizedInput.zona) {
+      req.body.sanitizedInput.zona = en.getReference(
+        'Zona',
+        req.body.sanitizedInput.zona
+      );
+    }
+
     en.assign(gastro, req.body.sanitizedInput);
     await en.flush();
     res.status(200).json({ message: 'gastronomico actualizado' });

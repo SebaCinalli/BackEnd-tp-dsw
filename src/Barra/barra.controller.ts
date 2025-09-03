@@ -3,6 +3,7 @@ import { orm } from '../shared/db/orm.js';
 import { Barra } from './barra.entity.js';
 import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
 import { obtenerServiciosReservados } from '../shared/reservaUtils.js';
+import { Zona } from '../Zona/zona.entity.js';
 
 const en = orm.em.fork();
 
@@ -16,8 +17,8 @@ function sanitizedBarraInput(req: Request, res: Response, next: NextFunction) {
     zona: req.body.zona,
   };
 
-  if(req.body.sanitizedInput.zona === undefined){
-    res.status(403).json({message: 'no autorizado'})
+  if (req.body.sanitizedInput.zona === undefined) {
+    res.status(403).json({ message: 'no autorizado' });
     return;
   }
 
@@ -31,10 +32,17 @@ function sanitizedBarraInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
-    // Obtener la fecha del query parameter
+    // Obtener la fecha y zona del query parameter
     const fecha = req.query.fecha as string;
+    const zonaId = req.query.zona as string;
 
-    let barras = await en.find(Barra, {});
+    // Construir filtros para la consulta
+    const filters: any = {};
+    if (zonaId) {
+      filters.zona = Number.parseInt(zonaId);
+    }
+
+    let barras = await en.find(Barra, filters, { populate: ['zona'] });
 
     // Si se proporciona una fecha, filtrar las barras reservadas para esa fecha
     if (fecha) {
@@ -54,21 +62,32 @@ async function findAll(req: Request, res: Response, next: NextFunction) {
         barras = barras.filter((barra) => !barrasReservadas.includes(barra.id));
 
         res.status(200).json({
-          message: `Barras disponibles para la fecha ${fecha}`,
+          message: `Barras disponibles para la fecha ${fecha}${
+            zonaId ? ` en la zona ${zonaId}` : ''
+          }`,
           data: barras,
           fechaConsultada: fecha,
+          zonaFiltrada: zonaId || null,
           barrasReservadas: barrasReservadas,
         });
       } catch (error) {
         console.error('Error al filtrar barras por fecha:', error);
-        res
-          .status(200)
-          .json({ message: 'todas las barras encontradas', data: barras });
+        res.status(200).json({
+          message: `todas las barras encontradas${
+            zonaId ? ` en la zona ${zonaId}` : ''
+          }`,
+          data: barras,
+          zonaFiltrada: zonaId || null,
+        });
       }
     } else {
-      res
-        .status(200)
-        .json({ message: 'todas las barras encontradas', data: barras });
+      res.status(200).json({
+        message: `todas las barras encontradas${
+          zonaId ? ` en la zona ${zonaId}` : ''
+        }`,
+        data: barras,
+        zonaFiltrada: zonaId || null,
+      });
     }
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -90,6 +109,14 @@ async function add(req: Request, res: Response, next: NextFunction) {
     // Si se subió una imagen, agregar el nombre del archivo
     if (req.file) {
       req.body.sanitizedInput.foto = req.file.filename;
+    }
+
+    // Convertir ID de zona en referencia a la entidad Zona
+    if (req.body.sanitizedInput.zona) {
+      req.body.sanitizedInput.zona = en.getReference(
+        'Zona',
+        req.body.sanitizedInput.zona
+      );
     }
 
     const barra = en.create(Barra, req.body.sanitizedInput);
@@ -116,6 +143,15 @@ async function modify(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
     const barra = await en.findOneOrFail(Barra, id);
+
+    // Convertir ID de zona en referencia a la entidad Zona si se está actualizando
+    if (req.body.sanitizedInput.zona) {
+      req.body.sanitizedInput.zona = en.getReference(
+        'Zona',
+        req.body.sanitizedInput.zona
+      );
+    }
+
     en.assign(barra, req.body.sanitizedInput);
     await en.flush();
     res.status(200).json({ message: 'barra modificada', data: barra });
