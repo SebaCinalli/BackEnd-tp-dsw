@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
 import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
 import { obtenerServiciosReservados } from '../shared/reservaUtils.js';
+import { Zona } from '../Zona/zona.entity.js';
 
 const en = orm.em.fork();
 
@@ -17,8 +18,8 @@ function sanitizedSalonInput(req: Request, res: Response, next: NextFunction) {
     zona: req.body.zona,
   };
 
-  if(req.body.sanitizedInput.zona === undefined){
-    res.status(403).json({message: 'no autorizado'})
+  if (req.body.sanitizedInput.zona === undefined) {
+    res.status(403).json({ message: 'no autorizado' });
     return;
   }
 
@@ -34,10 +35,17 @@ en.getRepository(Salon);
 
 async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
-    // Obtener la fecha del query parameter
+    // Obtener la fecha y zona del query parameter
     const fecha = req.query.fecha as string;
+    const zonaId = req.query.zona as string;
 
-    let salones = await en.find(Salon, {});
+    // Construir filtros para la consulta
+    const filters: any = {};
+    if (zonaId) {
+      filters.zona = Number.parseInt(zonaId);
+    }
+
+    let salones = await en.find(Salon, filters, { populate: ['zona'] });
 
     // Si se proporciona una fecha, filtrar los salones reservados para esa fecha
     if (fecha) {
@@ -59,21 +67,32 @@ async function findAll(req: Request, res: Response, next: NextFunction) {
         );
 
         res.status(200).json({
-          message: `Salones disponibles para la fecha ${fecha}`,
+          message: `Salones disponibles para la fecha ${fecha}${
+            zonaId ? ` en la zona ${zonaId}` : ''
+          }`,
           data: salones,
           fechaConsultada: fecha,
+          zonaFiltrada: zonaId || null,
           salonesReservados: salonesReservados,
         });
       } catch (error) {
         console.error('Error al filtrar salones por fecha:', error);
-        res
-          .status(200)
-          .json({ message: 'todos los salones encontrados', data: salones });
+        res.status(200).json({
+          message: `todos los salones encontrados${
+            zonaId ? ` en la zona ${zonaId}` : ''
+          }`,
+          data: salones,
+          zonaFiltrada: zonaId || null,
+        });
       }
     } else {
-      res
-        .status(200)
-        .json({ message: 'todos los salones encontrados', data: salones });
+      res.status(200).json({
+        message: `todos los salones encontrados${
+          zonaId ? ` en la zona ${zonaId}` : ''
+        }`,
+        data: salones,
+        zonaFiltrada: zonaId || null,
+      });
     }
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -95,6 +114,14 @@ async function add(req: Request, res: Response, next: NextFunction) {
     // Si se subió una imagen, agregar el nombre del archivo
     if (req.file) {
       req.body.sanitizedInput.foto = req.file.filename;
+    }
+
+    // Convertir ID de zona en referencia a la entidad Zona
+    if (req.body.sanitizedInput.zona) {
+      req.body.sanitizedInput.zona = en.getReference(
+        'Zona',
+        req.body.sanitizedInput.zona
+      );
     }
 
     const salon = en.create(Salon, req.body.sanitizedInput);
@@ -121,6 +148,15 @@ async function modify(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
     const salon = await en.findOneOrFail(Salon, id);
+
+    // Convertir ID de zona en referencia a la entidad Zona si se está actualizando
+    if (req.body.sanitizedInput.zona) {
+      req.body.sanitizedInput.zona = en.getReference(
+        'Zona',
+        req.body.sanitizedInput.zona
+      );
+    }
+
     en.assign(salon, req.body.sanitizedInput);
     await en.flush();
     res.status(200).json({ message: 'salon actualizado' });

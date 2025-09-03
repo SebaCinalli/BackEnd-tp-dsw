@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { orm } from '../shared/db/orm.js';
 import { deleteImageFile, replaceImageFile } from '../shared/imageUtils.js';
 import { obtenerServiciosReservados } from '../shared/reservaUtils.js';
+import { Zona } from '../Zona/zona.entity.js';
 
 const em = orm.em.fork();
 
@@ -16,11 +17,10 @@ function sanitizedDjInput(req: Request, res: Response, next: NextFunction) {
       zona: req.body.zona,
     };
 
-    if(req.body.sanitizedInput.zona === undefined){
-    res.status(403).json({message: 'no autorizado'})
-    return;
-  }
-
+    if (req.body.sanitizedInput.zona === undefined) {
+      res.status(403).json({ message: 'no autorizado' });
+      return;
+    }
 
     Object.keys(req.body.sanitizedInput).forEach((key) => {
       if (req.body.sanitizedInput[key] === undefined) {
@@ -37,10 +37,17 @@ async function findAll(req: Request, res: Response, next: NextFunction) {
   try {
     console.log('findAll llamado');
 
-    // Obtener la fecha del query parameter
+    // Obtener la fecha y zona del query parameter
     const fecha = req.query.fecha as string;
+    const zonaId = req.query.zona as string;
 
-    let djs = await em.find(Dj, {});
+    // Construir filtros para la consulta
+    const filters: any = {};
+    if (zonaId) {
+      filters.zona = Number.parseInt(zonaId);
+    }
+
+    let djs = await em.find(Dj, filters, { populate: ['zona'] });
     console.log('Found DJs:', djs);
 
     // Si se proporciona una fecha, filtrar los DJs reservados para esa fecha
@@ -53,19 +60,32 @@ async function findAll(req: Request, res: Response, next: NextFunction) {
         djs = djs.filter((dj) => !djsReservados.includes(dj.id));
 
         res.status(200).json({
-          message: `DJs disponibles para la fecha ${fecha}`,
+          message: `DJs disponibles para la fecha ${fecha}${
+            zonaId ? ` en la zona ${zonaId}` : ''
+          }`,
           data: djs,
           fechaConsultada: fecha,
+          zonaFiltrada: zonaId || null,
           djsReservados: djsReservados,
         });
       } catch (error) {
         console.error('Error al filtrar DJs por fecha:', error);
-        res
-          .status(200)
-          .json({ message: 'todos los dj encontrados', data: djs });
+        res.status(200).json({
+          message: `todos los dj encontrados${
+            zonaId ? ` en la zona ${zonaId}` : ''
+          }`,
+          data: djs,
+          zonaFiltrada: zonaId || null,
+        });
       }
     } else {
-      res.status(200).json({ message: 'todos los dj encontrados', data: djs });
+      res.status(200).json({
+        message: `todos los dj encontrados${
+          zonaId ? ` en la zona ${zonaId}` : ''
+        }`,
+        data: djs,
+        zonaFiltrada: zonaId || null,
+      });
     }
   } catch (error: any) {
     next(error);
@@ -87,6 +107,14 @@ async function add(req: Request, res: Response, next: NextFunction) {
     // Si se subió una imagen, agregar el nombre del archivo
     if (req.file) {
       req.body.sanitizedInput.foto = req.file.filename;
+    }
+
+    // Convertir ID de zona en referencia a la entidad Zona
+    if (req.body.sanitizedInput.zona) {
+      req.body.sanitizedInput.zona = em.getReference(
+        'Zona',
+        req.body.sanitizedInput.zona
+      );
     }
 
     const dj = em.create(Dj, req.body.sanitizedInput);
@@ -113,6 +141,15 @@ async function modify(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number.parseInt(req.params.id);
     const dj = await em.findOneOrFail(Dj, { id });
+
+    // Convertir ID de zona en referencia a la entidad Zona si se está actualizando
+    if (req.body.sanitizedInput.zona) {
+      req.body.sanitizedInput.zona = em.getReference(
+        'Zona',
+        req.body.sanitizedInput.zona
+      );
+    }
+
     em.assign(dj, req.body.sanitizedInput);
     await em.flush();
     res.status(200).json({ message: 'DJ actualizado', data: dj });
