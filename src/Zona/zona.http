@@ -1,34 +1,56 @@
-## Obtener las zonas
+### Login como administrador para obtener token
+# @name loginAdmin
+POST http://localhost:3000/api/usuario/login
+Content-Type: application/json
 
+{
+  "email": "admin@email.com",
+  "password": "Admin123"
+}
+
+### Obtener todas las zonas (requiere autenticación)
 GET http://localhost:3000/api/zona
-### POST una zona
+Cookie: token={{loginAdmin.response.headers.Set-Cookie}}
+
+### POST una zona (requiere admin)
 # @name createZonaClass
 POST http://localhost:3000/api/zona
 Content-Type: application/json
+Cookie: token={{loginAdmin.response.headers.Set-Cookie}}
 
 {
-  "nombre": "Zona1"
+  "nombre": "Zona Norte"
 }
-### Crear una nueva zona
+
+### Crear una nueva zona (requiere admin)
 # @name createZonaClass2
 POST http://localhost:3000/api/zona
 Content-Type: application/json
+Cookie: token={{loginAdmin.response.headers.Set-Cookie}}
 
 {
-  "nombre": "Zona2"
+  "nombre": "Zona Sur"
 }
+
 ### ID
 @id = {{createZonaClass.response.body.data.id}}
-### Obtener una zona por ID
-GET http://localhost:3000/api/zona/1
+
+### Obtener una zona por ID (requiere autenticación)
+GET http://localhost:3000/api/zona/{{id}}
+Cookie: token={{loginAdmin.response.headers.Set-Cookie}}
+
 ### ID A BORRAR
 @idToDelete = {{createZonaClass2.response.body.data.id}}
-### Actualizar una zona existente
+
+### Actualizar una zona existente (requiere admin)
 PUT http://localhost:3000/api/zona/{{id}}
 Content-Type: application/json
+Cookie: token={{loginAdmin.response.headers.Set-Cookie}}
 
 {
-  "nombre": "Zona Actualizada"
+  "nombre": "Zona Norte Actualizada"
 }
-### Eliminar una zona
+
+### Eliminar una zona (requiere admin)
 DELETE http://localhost:3000/api/zona/{{idToDelete}}
+Cookie: token={{loginAdmin.response.headers.Set-Cookie}}

@@ -17,8 +17,6 @@ function sanitizedZonaInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-//en.getRepository(Zona);
-
 async function findAll(req: Request, res: Response) {
   try {
     const Zonas = await en.find(
